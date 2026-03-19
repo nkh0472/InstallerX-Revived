@@ -135,6 +135,7 @@ fun UninstallPrepareContent(
                 text = stringResource(R.string.uninstall),
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColors(
+                    color = if (isDynamicColor) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.secondaryVariant,
                     textColor = MaterialTheme.colorScheme.error
                 ),
                 onClick = onUninstall,
