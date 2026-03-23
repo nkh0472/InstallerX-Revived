@@ -5,7 +5,6 @@ package com.rosan.installer.data.session.handler
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.system.Os
 import com.rosan.installer.R
 import com.rosan.installer.data.privileged.service.AutoLockService
 import com.rosan.installer.data.session.processor.InstallationProcessor
@@ -18,7 +17,6 @@ import com.rosan.installer.domain.engine.exception.AnalyseFailedAllFilesUnsuppor
 import com.rosan.installer.domain.engine.exception.AuthenticationFailedException
 import com.rosan.installer.domain.engine.model.AnalyseExtraEntity
 import com.rosan.installer.domain.engine.model.AppEntity
-import com.rosan.installer.domain.engine.model.InstallExtraInfoEntity
 import com.rosan.installer.domain.engine.model.PackageAnalysisResult
 import com.rosan.installer.domain.engine.model.SessionMode
 import com.rosan.installer.domain.engine.model.sourcePath
@@ -36,7 +34,7 @@ import com.rosan.installer.domain.settings.model.ConfigModel.Companion.default
 import com.rosan.installer.domain.settings.model.InstallMode
 import com.rosan.installer.domain.settings.repository.AppSettingsRepo
 import com.rosan.installer.domain.settings.repository.BooleanSetting
-import com.rosan.installer.ui.util.doBiometricAuthOrThrow
+import com.rosan.installer.ui.common.auth.safeBiometricAuthOrThrow
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -297,7 +295,7 @@ class ActionHandler(scope: CoroutineScope, installer: InstallerSessionRepository
 
         if (!requireBiometricAuth) return
 
-        return context.doBiometricAuthOrThrow(
+        return context.safeBiometricAuthOrThrow(
             title = context.getString(R.string.auth_to_continue_work),
             subTitle = context.getString(
                 if (isInstall)
@@ -365,7 +363,6 @@ class ActionHandler(scope: CoroutineScope, installer: InstallerSessionRepository
                     installationProcessor.install(
                         config = installer.config,
                         analysisResults = tempResults,
-                        cacheDirectory = cacheDirectory,
                         current = currentProgressIndex,
                         total = totalCount
                     )
@@ -410,7 +407,7 @@ class ActionHandler(scope: CoroutineScope, installer: InstallerSessionRepository
      */
     private suspend fun performInstallLogic() {
         Timber.d("[id=$installerId] install: Starting installation process via InstallationProcessor.")
-        installationProcessor.install(installer.config, installer.analysisResults, cacheDirectory)
+        installationProcessor.install(installer.config, installer.analysisResults)
 
         // Cache cleanup strategy
         val mode = installer.analysisResults.firstOrNull()?.sessionMode ?: SessionMode.Single
@@ -468,8 +465,7 @@ class ActionHandler(scope: CoroutineScope, installer: InstallerSessionRepository
 
         executeInstallUseCase.uninstall(
             config = installer.config,
-            packageName = packageName,
-            extra = InstallExtraInfoEntity(Os.getuid() / 100000, cacheDirectory)
+            packageName = packageName
         )
         Timber.d("[id=$installerId] uninstall: Succeeded for $packageName. Emitting ProgressEntity.UninstallSuccess.")
         installer.progress.emit(ProgressEntity.UninstallSuccess)

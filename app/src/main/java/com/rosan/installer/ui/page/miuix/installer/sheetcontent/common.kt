@@ -1,17 +1,26 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2025-2026 InstallerX Revived contributors
 package com.rosan.installer.ui.page.miuix.installer.sheetcontent
 
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.rosan.installer.domain.engine.model.AppEntity
 import com.rosan.installer.domain.engine.model.sortedBest
@@ -91,19 +100,38 @@ fun rememberAppInfoState(
 
 @Composable
 fun AppInfoSlot(
+    modifier: Modifier = Modifier,
     appInfo: AppInfoState,
-    modifier: Modifier = Modifier
+    // Callback for icon click events. Null means not clickable.
+    onIconClick: (() -> Unit)? = null
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Image(
-            painter = rememberDrawablePainter(drawable = appInfo.icon),
-            contentDescription = "App Icon",
-            modifier = Modifier.size(72.dp)
-        )
+        Box(
+            modifier = Modifier
+                .size(72.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .then(
+                    if (onIconClick != null) Modifier.clickable { onIconClick() } else Modifier
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = rememberDrawablePainter(
+                    drawable = appInfo.icon ?: ContextCompat.getDrawable(
+                        context,
+                        android.R.drawable.sym_def_app_icon
+                    )
+                ),
+                contentDescription = "App Icon",
+                modifier = Modifier.fillMaxSize()
+            )
+        }
         Text(
             modifier = Modifier.basicMarquee(),
             text = appInfo.label,

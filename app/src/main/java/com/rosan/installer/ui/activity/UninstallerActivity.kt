@@ -17,15 +17,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.rosan.installer.R
 import com.rosan.installer.data.session.manager.InstallerSessionManager
+import com.rosan.installer.domain.device.model.PermissionType
+import com.rosan.installer.domain.device.provider.PermissionChecker
 import com.rosan.installer.domain.session.model.ProgressEntity
 import com.rosan.installer.domain.session.repository.InstallerSessionRepository
 import com.rosan.installer.domain.settings.model.ThemeState
 import com.rosan.installer.domain.settings.provider.ThemeStateProvider
+import com.rosan.installer.ui.common.auth.BiometricAuthBridge
+import com.rosan.installer.ui.common.permission.PermissionRequester
 import com.rosan.installer.ui.page.main.installer.InstallerPage
 import com.rosan.installer.ui.page.miuix.installer.MiuixInstallerPage
 import com.rosan.installer.ui.theme.InstallerTheme
-import com.rosan.installer.ui.util.PermissionDenialReason
-import com.rosan.installer.ui.util.PermissionManager
 import com.rosan.installer.util.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +48,8 @@ class UninstallerActivity : ComponentActivity(), KoinComponent {
     private var installer: InstallerSessionRepository? = null
     private var job: Job? = null
 
-    private lateinit var permissionManager: PermissionManager
+    private val permissionChecker: PermissionChecker by inject()
+    private lateinit var permissionRequester: PermissionRequester
 
     // Flag to track if the activity is stopped due to a permission request
     private var isRequestingPermission = false
@@ -59,9 +62,9 @@ class UninstallerActivity : ComponentActivity(), KoinComponent {
         super.onCreate(savedInstanceState)
         Timber.d("UninstallerActivity onCreate.")
 
-        permissionManager = PermissionManager(this)
+        permissionRequester = PermissionRequester(this, permissionChecker)
         // Set up the callback to intercept the settings launch event
-        permissionManager.onBeforeLaunchSettings = {
+        permissionRequester.onBeforeLaunchSettings = {
             Timber.d("Launching settings for permission, preventing repo closure in onStop.")
             isRequestingPermission = true
         }
@@ -110,6 +113,11 @@ class UninstallerActivity : ComponentActivity(), KoinComponent {
 
     override fun onStop() {
         super.onStop()
+
+        if (BiometricAuthBridge.isAuthenticating) {
+            Timber.d("onStop: Ignored repo closure due to active biometric authentication.")
+            return
+        }
         // Check if the screen is currently on.
         // If the screen is off, onStop is triggered by locking the device.
         // We explicitly want to ignore this case.
@@ -142,19 +150,19 @@ class UninstallerActivity : ComponentActivity(), KoinComponent {
     }
 
     private fun requestPermissionsAndProceed(packageName: String) {
-        permissionManager.requestEssentialPermissions(
+        permissionRequester.requestEssentialPermissions(
             onGranted = {
                 Timber.d("Permissions granted. Proceeding with uninstall for $packageName")
                 installer?.resolveUninstall(this@UninstallerActivity, packageName)
             },
             onDenied = { reason ->
                 when (reason) {
-                    PermissionDenialReason.NOTIFICATION -> {
+                    PermissionType.NOTIFICATION -> {
                         Timber.w("Notification permission was denied.")
                         this.toast(R.string.enable_notification_hint)
                     }
 
-                    PermissionDenialReason.STORAGE -> {
+                    PermissionType.STORAGE -> {
                         Timber.w("Storage permission was denied.")
                         this.toast(R.string.enable_storage_permission_hint)
                     }

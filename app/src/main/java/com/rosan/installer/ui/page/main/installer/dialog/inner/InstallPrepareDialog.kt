@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2023-2026 iamr0s, InstallerX Revived contributors
 package com.rosan.installer.ui.page.main.installer.dialog.inner
 
 import android.annotation.SuppressLint
@@ -19,23 +21,23 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rosan.installer.R
 import com.rosan.installer.core.env.DeviceConfig
 import com.rosan.installer.domain.device.model.Manufacturer
 import com.rosan.installer.domain.engine.model.AppEntity
 import com.rosan.installer.domain.engine.model.DataType
 import com.rosan.installer.domain.engine.model.sortedBest
+import com.rosan.installer.domain.engine.usecase.AnalyzeInstallStateUseCase
 import com.rosan.installer.domain.session.repository.InstallerSessionRepository
 import com.rosan.installer.ui.icons.AppIcons
 import com.rosan.installer.ui.page.main.installer.InstallerViewAction
@@ -43,9 +45,10 @@ import com.rosan.installer.ui.page.main.installer.InstallerViewModel
 import com.rosan.installer.ui.page.main.installer.dialog.DialogInnerParams
 import com.rosan.installer.ui.page.main.installer.dialog.DialogParams
 import com.rosan.installer.ui.page.main.installer.dialog.DialogParamsType
+import com.rosan.installer.ui.page.main.installer.mapper.InstallStateUiMapper
 import com.rosan.installer.ui.page.main.widget.chip.Chip
-import com.rosan.installer.ui.page.main.widget.chip.WarningChipGroup
-import com.rosan.installer.ui.util.InstallLogicUtils
+import com.rosan.installer.ui.page.main.widget.chip.InstallInfoChipGroup
+import org.koin.compose.koinInject
 
 // Assume pausingIcon is accessible
 
@@ -108,10 +111,10 @@ private fun installPrepareTooManyDialog(
 fun installPrepareDialog(
     installer: InstallerSessionRepository, viewModel: InstallerViewModel
 ): DialogParams {
-    LocalContext.current
-    val currentPackageName by viewModel.currentPackageName.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentPackageName = uiState.currentPackageName
     val currentPackage = installer.analysisResults.find { it.packageName == currentPackageName }
-    val settings = viewModel.viewSettings
+    val settings = uiState.viewSettings
 
     // If there is no specific package to prepare, show an empty/error dialog.
     if (currentPackage == null) {
@@ -182,9 +185,12 @@ fun installPrepareDialog(
     val textArchMismatch = stringResource(R.string.installer_prepare_arch_mismatch_notice)
     val tagIdentical = stringResource(R.string.tag_identical)
     val textIdentical = stringResource(R.string.installer_prepare_identical_notice)
+    val tagXposed = stringResource(R.string.tag_xposed)
+    val labelXposedMinApi = stringResource(R.string.installer_xposed_min_api)
+    val labelXposedTargetApi = stringResource(R.string.installer_xposed_target_api)
 
     val installResources = remember(primaryColor, errorColor, tertiaryColor) {
-        InstallWarningResources(
+        InstallNoticeResources(
             tagDowngrade = tagDowngrade,
             textDowngrade = downgradeWarning,
             tagSignature = tagSignature,
@@ -198,29 +204,47 @@ fun installPrepareDialog(
             textArchMismatchFormat = textArchMismatch,
             tagIdentical = tagIdentical,
             textIdentical = textIdentical,
+            tagXposed = tagXposed,
+            labelXposedMinApi = labelXposedMinApi,
+            labelXposedTargetApi = labelXposedTargetApi,
             errorColor = errorColor,
             tertiaryColor = tertiaryColor,
             primaryColor = primaryColor
         )
     }
 
-    val (warningModels, buttonTextId) = remember(
+    // Inject the pure domain use case
+    val analyzeInstallStateUseCase = koinInject<AnalyzeInstallStateUseCase>()
+
+    // Instantiate the UI mapper with the required Compose resources
+    val installStateUiMapper = remember(installResources) {
+        InstallStateUiMapper(installResources)
+    }
+
+    // Execute domain logic and map to UI state within the remember block
+    val (notices, buttonTextId) = remember(
         currentPackage,
         entityToInstall,
         isSplitUpdateMode,
         containerType,
-        installResources
+        installStateUiMapper
     ) {
-        InstallLogicUtils.analyzeInstallState(
+        // 1. Get pure domain state
+        val domainState = analyzeInstallStateUseCase(
             currentPackage = currentPackage,
             entityToInstall = entityToInstall,
             primaryEntity = primaryEntity,
             isSplitUpdateMode = isSplitUpdateMode,
             containerType = containerType,
             systemArch = DeviceConfig.currentArchitecture,
-            systemSdkInt = Build.VERSION.SDK_INT,
-            resources = installResources
+            systemSdkInt = Build.VERSION.SDK_INT
         )
+
+        // 2. Map to UI state
+        val uiState = installStateUiMapper.mapToUiState(domainState)
+
+        // 3. Destructure the data class components
+        Pair(uiState.notices, uiState.buttonTextId)
     }
 
     return baseParams.copy(
@@ -230,9 +254,9 @@ fun installPrepareDialog(
         ) {
             LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
                 item {
-                    WarningChipGroup(
+                    InstallInfoChipGroup(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        warnings = warningModels
+                        notices = notices
                     )
                 }
                 item {
