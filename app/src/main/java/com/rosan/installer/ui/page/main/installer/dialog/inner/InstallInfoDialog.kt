@@ -53,7 +53,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.rosan.installer.R
 import com.rosan.installer.core.env.DeviceConfig
 import com.rosan.installer.domain.device.model.Manufacturer
@@ -79,7 +78,7 @@ import kotlin.math.abs
  */
 @Composable
 fun installInfoDialog(
-    installer: InstallerSessionRepository,
+    session: InstallerSessionRepository,
     viewModel: InstallerViewModel,
     onTitleExtraClick: () -> Unit = {}
 ): DialogParams {
@@ -89,7 +88,7 @@ fun installInfoDialog(
     val currentPackageName = uiState.currentPackageName
     val stage = uiState.stage
 
-    val currentPackage = installer.analysisResults.find { it.packageName == currentPackageName }
+    val currentPackage = session.analysisResults.find { it.packageName == currentPackageName }
     // If there's no current package to display, return empty params.
     if (currentPackage == null) return DialogParams()
 
@@ -128,7 +127,7 @@ fun installInfoDialog(
                     fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(150))
                 },
                 label = "IconLoadAnimation"
-            ) { icon ->
+            ) { iconBitmap ->
                 Box(
                     modifier = Modifier
                         .size(64.dp)
@@ -144,11 +143,13 @@ fun installInfoDialog(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = rememberDrawablePainter(icon),
-                        contentDescription = null
-                    )
+                    if (iconBitmap != null)
+                        Image(
+                            bitmap = iconBitmap,
+                            modifier = Modifier.fillMaxSize(),
+                            contentDescription = null
+                        )
+
                 }
             }
         },
@@ -317,7 +318,7 @@ fun installInfoDialog(
 
                     else -> {
                         AnimatedVisibility(
-                            visible = installer.config.displaySdk
+                            visible = session.config.displaySdk
                         ) {
                             Box(
                                 modifier = Modifier
@@ -406,7 +407,7 @@ fun installInfoDialog(
                     }
                 }
                 // --- Size Display ---
-                AnimatedVisibility(visible = installer.config.displaySize && totalSize > 0L) {
+                AnimatedVisibility(visible = session.config.displaySize && totalSize > 0L) {
                     Column {
                         Spacer(modifier = Modifier.size(8.dp))
                         SizeInfoDisplay(

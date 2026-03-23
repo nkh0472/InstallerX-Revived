@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -59,6 +60,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -309,6 +311,14 @@ private fun ItemsWidget(
 
             val isApplied = appliedPackageSet.contains(app.packageName)
 
+            // Dispatch action to load the icon dynamically when the item becomes visible
+            LaunchedEffect(app.packageName) {
+                viewModel.dispatch(ApplyViewAction.LoadIcon(app.packageName))
+            }
+
+            // Retrieve the dynamically loaded icon from the managed state
+            val iconBitmap = uiState.displayIcons[app.packageName]
+
             ApplyItemWidget(
                 modifier = Modifier.animateItem(
                     placementSpec = spring(
@@ -317,6 +327,7 @@ private fun ItemsWidget(
                     )
                 ),
                 app = app,
+                icon = iconBitmap,
                 isApplied = isApplied,
                 shape = shape,
                 containerColor = MaterialTheme.colorScheme.surfaceBright,
@@ -329,6 +340,7 @@ private fun ItemsWidget(
                 }
             )
         }
+        item { Spacer(modifier = Modifier.navigationBarsPadding()) }
     }
 }
 
