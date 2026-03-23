@@ -51,7 +51,7 @@ fun Modifier.installerHazeEffect(
     ) {
         blurEnabled = enabled
         blurRadius = 20.dp
-        inputScale = HazeInputScale.Fixed(0.25f)
+        inputScale = HazeInputScale.Fixed(0.33f)
         noiseFactor = 0f
         forceInvalidateOnPreDraw = false
     }
