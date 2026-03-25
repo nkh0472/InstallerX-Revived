@@ -332,9 +332,9 @@ private fun ItemsWidget(
         state = lazyListState,
         verticalArrangement = Arrangement.spacedBy(2.dp),
         contentPadding = PaddingValues(
-            start = startPadding + 8.dp,
+            start = startPadding + 16.dp,
             top = topPadding + 8.dp,
-            end = endPadding + 8.dp,
+            end = endPadding + 16.dp,
             bottom = bottomPadding + 88.dp
         )
     ) {
