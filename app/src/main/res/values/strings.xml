@@ -338,6 +338,7 @@
     <string name="installer_prepare_install">Before you install</string>
     <string name="installer_prepare_install_empty">Please select at least one package</string>
     <string name="installer_prepare_install_too_many">Please select only one base.apk</string>
+    <string name="copied_format">Copied: %1$s</string>
     <string name="tag_downgrade">Downgrade</string>
     <string name="tag_signature">Signature</string>
     <string name="tag_sdk" translatable="false">SDK</string>
