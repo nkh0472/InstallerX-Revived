@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 InstallerX Revived contributors
 package com.rosan.installer.ui.page.miuix.settings.preferred.subpage.about
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -252,6 +253,8 @@ fun MiuixAboutPage(
     WindowDialog(
         show = showLoadingDialog.value
     ) {
+        BackHandler { }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
