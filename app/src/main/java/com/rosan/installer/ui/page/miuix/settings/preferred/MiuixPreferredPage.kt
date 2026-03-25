@@ -5,8 +5,15 @@ package com.rosan.installer.ui.page.miuix.settings.preferred
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -18,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -119,6 +127,10 @@ fun MiuixPreferredPage(
         }
     }
 
+    // Capture layout direction and horizontal safe insets for display cutouts in landscape
+    val layoutDirection = LocalLayoutDirection.current
+    val horizontalSafeInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -138,7 +150,10 @@ fun MiuixPreferredPage(
                 .overScrollVertical()
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             contentPadding = PaddingValues(
+                // Safely add horizontal paddings to avoid notches in landscape
+                start = horizontalSafeInsets.calculateStartPadding(layoutDirection),
                 top = innerPadding.calculateTopPadding(),
+                end = horizontalSafeInsets.calculateEndPadding(layoutDirection),
                 bottom = outerPadding.calculateBottomPadding()
             ),
             overscrollEffect = null
