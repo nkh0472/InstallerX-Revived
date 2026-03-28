@@ -5,10 +5,10 @@ package com.rosan.installer.domain.settings.usecase.config
 import com.rosan.installer.domain.settings.model.Authorizer
 import com.rosan.installer.domain.settings.model.ConfigModel
 import com.rosan.installer.domain.settings.provider.SystemEnvProvider
-import com.rosan.installer.domain.settings.repository.ConfigRepo
+import com.rosan.installer.domain.settings.repository.ConfigRepository
 
 class GetConfigDraftUseCase(
-    private val configRepo: ConfigRepo,
+    private val configRepo: ConfigRepository,
     private val systemEnvProvider: SystemEnvProvider
 ) {
     suspend operator fun invoke(id: Long?, globalAuthorizer: Authorizer): ConfigModel {

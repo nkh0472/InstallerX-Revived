@@ -171,6 +171,7 @@
     <string name="filter">Filter</string>
     <string name="order">Sort</string>
     <string name="config_global_default">Global Default</string>
+    <string name="config_status_inactive">Inactive</string>
     <string name="config_name">Profile name</string>
     <string name="config_info">Info</string>
     <string name="config_scope">Scope</string>

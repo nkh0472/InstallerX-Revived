@@ -10,7 +10,7 @@ import com.rosan.installer.domain.settings.model.InstallMode
 import com.rosan.installer.domain.settings.repository.AppRepository
 import com.rosan.installer.domain.settings.repository.AppSettingsRepo
 import com.rosan.installer.domain.settings.repository.BooleanSetting
-import com.rosan.installer.domain.settings.repository.ConfigRepo
+import com.rosan.installer.domain.settings.repository.ConfigRepository
 import com.rosan.installer.domain.settings.repository.IntSetting
 import com.rosan.installer.domain.settings.repository.StringSetting
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 class GetResolvedConfigUseCase(
     private val context: Context,
     private val appSettingsRepo: AppSettingsRepo,
-    private val configRepo: ConfigRepo,
+    private val configRepo: ConfigRepository,
     private val appRepository: AppRepository
 ) {
     suspend operator fun invoke(packageName: String? = null): ConfigModel = withContext(Dispatchers.IO) {
