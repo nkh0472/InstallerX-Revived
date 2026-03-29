@@ -137,7 +137,6 @@ fun MiuixApplyPage(
                     title = stringResource(R.string.config_scope),
                     navigationIcon = {
                         MiuixBackButton(
-                            modifier = Modifier.padding(start = 16.dp),
                             icon = MiuixIcons.Regular.Close,
                             onClick = { navController.navigateUp() })
                     },
@@ -467,7 +466,6 @@ private fun TopAppBarActions(viewModel: ApplyViewModel, uiState: ApplyViewState)
     }
 
     IconButton(
-        modifier = Modifier.padding(end = 12.dp),
         onClick = {
             showMenu.value = true
         },

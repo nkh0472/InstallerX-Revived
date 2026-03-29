@@ -98,7 +98,7 @@ fun MiuixLabPage(
                 color = hazeState.getMiuixAppBarColor(),
                 title = stringResource(R.string.lab),
                 navigationIcon = {
-                    MiuixBackButton(modifier = Modifier.padding(start = 16.dp), onClick = { navController.navigateUp() })
+                    MiuixBackButton(onClick = { navController.navigateUp() })
                 },
                 scrollBehavior = scrollBehavior
             )

@@ -151,7 +151,7 @@ fun MiuixAboutPage(
                 color = hazeState.getMiuixAppBarColor(),
                 title = stringResource(id = R.string.about),
                 scrollBehavior = scrollBehavior,
-                navigationIcon = { MiuixBackButton(modifier = Modifier.padding(start = 16.dp), onClick = { navController.navigateUp() }) }
+                navigationIcon = { MiuixBackButton(onClick = { navController.navigateUp() }) }
             )
         },
     ) { paddingValues ->
