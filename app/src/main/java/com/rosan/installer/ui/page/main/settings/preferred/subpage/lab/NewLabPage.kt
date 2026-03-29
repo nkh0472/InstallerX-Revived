@@ -2,6 +2,11 @@
 // Copyright (C) 2025-2026 InstallerX Revived contributors
 package com.rosan.installer.ui.page.main.settings.preferred.subpage.lab
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,6 +50,7 @@ import com.rosan.installer.ui.icons.AppIcons
 import com.rosan.installer.ui.page.main.widget.card.InfoTipCard
 import com.rosan.installer.ui.page.main.widget.dialog.RootImplementationSelectionDialog
 import com.rosan.installer.ui.page.main.widget.setting.AppBackButton
+import com.rosan.installer.ui.page.main.widget.setting.IntNumberPickerWidget
 import com.rosan.installer.ui.page.main.widget.setting.LabHttpProfileWidget
 import com.rosan.installer.ui.page.main.widget.setting.LabRootImplementationWidget
 import com.rosan.installer.ui.page.main.widget.setting.SplicedColumnGroup
@@ -187,11 +193,28 @@ fun NewLabPage(
                 ) {
                     item(visible = isMiIslandSupported) {
                         SwitchWidget(
+                            icon = AppIcons.MiIsland,
                             title = stringResource(R.string.lab_mi_island),
                             description = stringResource(R.string.lab_mi_island_desc),
                             checked = uiState.labUseMiIsland,
                             onCheckedChange = { viewModel.dispatch(LabSettingsAction.LabChangeUseMiIsland(it)) }
                         )
+                        AnimatedVisibility(
+                            visible = uiState.labUseMiIsland,
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically()
+                        ) {
+                            IntNumberPickerWidget(
+                                icon = AppIcons.StopWatch,
+                                title = stringResource(R.string.lab_mi_island_countdown),
+                                description = stringResource(R.string.lab_mi_island_countdown_desc),
+                                value = uiState.labMiIslandBlockingIntervalMs,
+                                startInt = 50,
+                                endInt = 350
+                            ) {
+                                viewModel.dispatch(LabSettingsAction.LabChangeMiIslandBlockingIntervalMs(it))
+                            }
+                        }
                     }
                     item {
                         SwitchWidget(

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rosan.installer.domain.settings.repository.AppSettingsRepository
 import com.rosan.installer.domain.settings.repository.BooleanSetting
+import com.rosan.installer.domain.settings.repository.IntSetting
 import com.rosan.installer.domain.settings.repository.StringSetting
 import com.rosan.installer.domain.settings.usecase.settings.UpdateSettingUseCase
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,6 +28,7 @@ class LabSettingsViewModel(
             labRootModuleAlwaysUseRoot = prefs.labRootModuleAlwaysUseRoot,
             labRootImplementation = prefs.labRootImplementation,
             labUseMiIsland = prefs.labUseMiIsland,
+            labMiIslandBlockingIntervalMs = prefs.labUseMiIslandBlockingIntervalMs,
             labSetInstallRequester = prefs.labSetInstallRequester,
             labHttpProfile = prefs.labHttpProfile,
             labHttpSaveFile = prefs.labHttpSaveFile,
@@ -72,6 +74,13 @@ class LabSettingsViewModel(
                 updateSetting(
                     BooleanSetting.ShowMiIsland,
                     action.enable
+                )
+            }
+
+            is LabSettingsAction.LabChangeMiIslandBlockingIntervalMs -> viewModelScope.launch {
+                updateSetting(
+                    IntSetting.ShowMiIslandBlockingInterval,
+                    action.ms
                 )
             }
 

@@ -40,6 +40,7 @@ data class AppPreferences(
     val labRootModuleAlwaysUseRoot: Boolean,
     val labRootImplementation: RootImplementation,
     val labUseMiIsland: Boolean,
+    val labUseMiIslandBlockingIntervalMs: Int,
     val labHttpProfile: HttpProfile,
     val labHttpSaveFile: Boolean,
     val labSetInstallRequester: Boolean,

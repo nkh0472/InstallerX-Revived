@@ -40,6 +40,9 @@ class AppDataStore(
         // Show Mi Island
         val SHOW_MI_ISLAND = booleanPreferencesKey("show_mi_island")
 
+        // The duration to keep the network blocked to bypass Xiaomi's notification scanner
+        val SHOW_MI_ISLAND_BLOCKING_INTERVAL_MS = intPreferencesKey("show_mi_island_blocking_interval")
+
         // Use Biometric Auth Install
         val INSTALLER_REQUIRE_BIOMETRIC_AUTH = booleanPreferencesKey("installer_use_biometric_auth")
 

@@ -171,6 +171,7 @@ fun NewInstallerGlobalSettingsPage(
                                     value = uiState.dhizukuAutoCloseCountDown,
                                     startInt = 1,
                                     endInt = 10,
+                                    stepSize = 1,
                                     onValueChange = {
                                         viewModel.dispatch(InstallerSettingsAction.ChangeDhizukuAutoCloseCountDown(it))
                                     }

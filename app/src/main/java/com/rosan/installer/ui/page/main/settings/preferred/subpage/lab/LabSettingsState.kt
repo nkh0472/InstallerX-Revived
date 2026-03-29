@@ -12,6 +12,7 @@ data class LabSettingsState(
     val labRootModuleAlwaysUseRoot: Boolean = false,
     val labRootImplementation: RootImplementation = RootImplementation.Magisk,
     val labUseMiIsland: Boolean = false,
+    val labMiIslandBlockingIntervalMs: Int = 100,
     val labSetInstallRequester: Boolean = false,
     val labHttpProfile: HttpProfile = HttpProfile.ALLOW_SECURE,
     val labHttpSaveFile: Boolean = false,

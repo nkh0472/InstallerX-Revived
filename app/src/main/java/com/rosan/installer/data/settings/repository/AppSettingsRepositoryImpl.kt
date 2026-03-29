@@ -76,6 +76,7 @@ class AppSettingsRepositoryImpl(
             appDataStore.getBoolean(AppDataStore.LAB_MODULE_ALWAYS_ROOT, false),
             appDataStore.getString(AppDataStore.LAB_ROOT_IMPLEMENTATION, "Default"),
             appDataStore.getBoolean(AppDataStore.SHOW_MI_ISLAND, false),
+            appDataStore.getInt(AppDataStore.SHOW_MI_ISLAND_BLOCKING_INTERVAL_MS, 100),
             appDataStore.getString(AppDataStore.LAB_HTTP_PROFILE, "Default"),
             appDataStore.getBoolean(AppDataStore.LAB_HTTP_SAVE_FILE, false),
             appDataStore.getBoolean(AppDataStore.LAB_SET_INSTALL_REQUESTER, false),
@@ -139,6 +140,7 @@ class AppSettingsRepositoryImpl(
             labRootModuleAlwaysUseRoot = values[idx++] as Boolean,
             labRootImplementation = RootImplementation.fromString(values[idx++] as String),
             labUseMiIsland = values[idx++] as Boolean,
+            labUseMiIslandBlockingIntervalMs = values[idx++] as Int,
             labHttpProfile = HttpProfile.fromString(values[idx++] as String),
             labHttpSaveFile = values[idx++] as Boolean,
             labSetInstallRequester = values[idx++] as Boolean,
@@ -217,6 +219,7 @@ class AppSettingsRepositoryImpl(
     private fun intKey(setting: IntSetting): Preferences.Key<Int> =
         when (setting) {
             IntSetting.ThemeSeedColor -> AppDataStore.THEME_SEED_COLOR
+            IntSetting.ShowMiIslandBlockingInterval -> AppDataStore.SHOW_MI_ISLAND_BLOCKING_INTERVAL_MS
             IntSetting.NotificationSuccessAutoClearSeconds -> AppDataStore.NOTIFICATION_SUCCESS_AUTO_CLEAR_SECONDS
             IntSetting.DialogAutoCloseCountdown -> AppDataStore.DIALOG_AUTO_CLOSE_COUNTDOWN
             IntSetting.UninstallFlags -> AppDataStore.UNINSTALL_FLAGS

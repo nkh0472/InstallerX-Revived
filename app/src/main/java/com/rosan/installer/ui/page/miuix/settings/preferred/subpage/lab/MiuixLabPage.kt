@@ -42,6 +42,7 @@ import com.rosan.installer.ui.icons.AppIcons
 import com.rosan.installer.ui.page.main.settings.preferred.subpage.lab.LabSettingsAction
 import com.rosan.installer.ui.page.main.settings.preferred.subpage.lab.LabSettingsViewModel
 import com.rosan.installer.ui.page.miuix.widgets.MiuixBackButton
+import com.rosan.installer.ui.page.miuix.widgets.MiuixIntNumberPickerWidget
 import com.rosan.installer.ui.page.miuix.widgets.MiuixRootImplementationDialog
 import com.rosan.installer.ui.page.miuix.widgets.MiuixSettingsTipCard
 import com.rosan.installer.ui.page.miuix.widgets.MiuixSwitchWidget
@@ -204,6 +205,21 @@ fun MiuixLabPage(
                             checked = uiState.labUseMiIsland,
                             onCheckedChange = { viewModel.dispatch(LabSettingsAction.LabChangeUseMiIsland(it)) }
                         )
+                    AnimatedVisibility(
+                        visible = isMiIslandSupported && uiState.labUseMiIsland,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        MiuixIntNumberPickerWidget(
+                            title = stringResource(R.string.lab_mi_island_countdown),
+                            description = stringResource(R.string.lab_mi_island_countdown_desc),
+                            value = uiState.labMiIslandBlockingIntervalMs,
+                            startInt = 50,
+                            endInt = 350
+                        ) {
+                            viewModel.dispatch(LabSettingsAction.LabChangeMiIslandBlockingIntervalMs(it))
+                        }
+                    }
                     MiuixSwitchWidget(
                         icon = AppIcons.Share,
                         title = stringResource(R.string.lab_tap_icon_to_share),
