@@ -459,20 +459,27 @@ fun installInfoDialog(
                     }
                 }
                 // --- OPPO Info Display ---
-                if (DeviceConfig.currentManufacturer == Manufacturer.OPPO || DeviceConfig.currentManufacturer == Manufacturer.ONEPLUS)
-                    AnimatedVisibility(settings.showOPPOSpecial && entityToInstall.sourceType == DataType.APK) {
-                        Column {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            (entityToInstall as AppEntity.BaseEntity).minOsdkVersion?.let {
-                                Text(
-                                    text = stringResource(R.string.installer_package_minOsdkVersion, it),
-                                    textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
+                val showOsdkInfo = (DeviceConfig.currentManufacturer == Manufacturer.OPPO ||
+                        DeviceConfig.currentManufacturer == Manufacturer.ONEPLUS) &&
+                        settings.showOPPOSpecial &&
+                        entityToInstall.sourceType == DataType.APK &&
+                        (entityToInstall as? AppEntity.BaseEntity)?.minOsdkVersion != null
+
+                AnimatedVisibility(visible = showOsdkInfo) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        (entityToInstall as? AppEntity.BaseEntity)?.minOsdkVersion?.let { osdk ->
+                            Text(
+                                text = stringResource(R.string.installer_package_minOsdkVersion, osdk),
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                     }
-
+                }
             }
         }
     )

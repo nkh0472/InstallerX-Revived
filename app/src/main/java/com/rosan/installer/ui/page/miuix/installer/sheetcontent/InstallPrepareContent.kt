@@ -268,15 +268,21 @@ fun InstallPrepareContent(
                                 )
                             }
 
-                            if (DeviceConfig.currentManufacturer == Manufacturer.OPPO || DeviceConfig.currentManufacturer == Manufacturer.ONEPLUS) {
-                                AnimatedVisibility(visible = settings.showOPPOSpecial && primaryEntity.sourceType == DataType.APK) {
-                                    primaryEntity.minOsdkVersion?.let {
-                                        AdaptiveInfoRow(
-                                            labelResId = R.string.installer_package_minOsdkVersion_label,
-                                            newValue = it,
-                                            oldValue = null
-                                        )
-                                    }
+                            val isOppoOrOnePlus = DeviceConfig.currentManufacturer == Manufacturer.OPPO ||
+                                    DeviceConfig.currentManufacturer == Manufacturer.ONEPLUS
+                            val shouldShowOppoRow = isOppoOrOnePlus &&
+                                    settings.showOPPOSpecial &&
+                                    primaryEntity.sourceType == DataType.APK &&
+                                    primaryEntity.minOsdkVersion != null
+
+                            AnimatedVisibility(visible = shouldShowOppoRow) {
+                                // At this point, minOsdkVersion is guaranteed to be non-null
+                                primaryEntity.minOsdkVersion?.let { version ->
+                                    AdaptiveInfoRow(
+                                        labelResId = R.string.installer_package_minOsdkVersion_label,
+                                        newValue = version,
+                                        oldValue = null
+                                    )
                                 }
                             }
                         }
