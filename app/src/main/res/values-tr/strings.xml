@@ -676,8 +676,6 @@
     <string name="old_version_uninstalled">Kaldırıldı</string>
     <string name="lab_module_flashing_show_art">ASCII sanatını görüntüle</string>
     <string name="lab_module_flashing_show_art_desc">Yükleme başladığında InstallerX ASCII sanat eserlerini görüntüleyin</string>
-    <string name="lab_module_always_use_root">Modülleri yüklemek için her zaman root yetkisini kullanın</string>
-    <string name="lab_module_always_use_root_desc">Sistem yükleyicisi olarak çalışırken, en iyi performansı elde etmek için modülleri yüklemek için her zaman root yetkisini kullanın</string>
     <string name="lab_unstable_features">Kararsız özellikler</string>
     <string name="lab_set_install_requester">Yükleme İsteği Göndericisini Ayarla</string>
     <string name="lab_set_install_requester_desc">Sistem davranışına uyacak şekilde OriginatingUid alanını çağıran paketle doldurun</string>

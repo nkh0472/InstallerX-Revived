@@ -493,7 +493,8 @@ class ActionHandler(scope: CoroutineScope, session: InstallerSessionRepository) 
 
     private suspend fun handleReboot(reason: String) {
         Timber.d("[id=$sessionId] handleReboot: Starting cleanup before reboot.")
-        val systemUseRoot = deviceCapabilityProvider.isSystemApp && appSettingsRepo.getBoolean(BooleanSetting.LabModuleAlwaysRoot, false).first()
+        val systemUseRoot =
+            deviceCapabilityProvider.isSystemApp && appSettingsRepo.getBoolean(BooleanSetting.AlwaysUseRootInSystem, false).first()
         if (systemUseRoot) session.config = session.config.copy(authorizer = Authorizer.Root)
         // Execute cleanup immediately
         // Call clearCache() explicitly to ensure temporary files are removed

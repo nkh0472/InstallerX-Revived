@@ -25,7 +25,6 @@ class LabSettingsViewModel(
             useBlur = prefs.useBlur,
             labRootEnableModuleFlash = prefs.labRootEnableModuleFlash,
             labRootShowModuleArt = prefs.labRootShowModuleArt,
-            labRootModuleAlwaysUseRoot = prefs.labRootModuleAlwaysUseRoot,
             labRootImplementation = prefs.labRootImplementation,
             labUseMiIsland = prefs.labUseMiIsland,
             labMiIslandBlockingIntervalMs = prefs.labUseMiIslandBlockingIntervalMs,
@@ -52,13 +51,6 @@ class LabSettingsViewModel(
             is LabSettingsAction.LabChangeRootShowModuleArt -> viewModelScope.launch {
                 updateSetting(
                     BooleanSetting.LabModuleFlashShowArt,
-                    action.enable
-                )
-            }
-
-            is LabSettingsAction.LabChangeRootModuleAlwaysUseRoot -> viewModelScope.launch {
-                updateSetting(
-                    BooleanSetting.LabModuleAlwaysRoot,
                     action.enable
                 )
             }

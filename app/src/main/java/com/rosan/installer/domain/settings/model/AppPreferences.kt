@@ -9,6 +9,7 @@ import com.rosan.installer.ui.theme.material.ThemeMode
 // Represents the aggregated state of all application preferences.
 data class AppPreferences(
     val authorizer: Authorizer,
+    val alwaysUseRootInSystem: Boolean,
     val customizeAuthorizer: String,
     val installMode: InstallMode,
     val showDialogInstallExtendedMenu: Boolean,
@@ -37,7 +38,6 @@ data class AppPreferences(
     // Lab Settings
     val labRootEnableModuleFlash: Boolean,
     val labRootShowModuleArt: Boolean,
-    val labRootModuleAlwaysUseRoot: Boolean,
     val labRootImplementation: RootImplementation,
     val labUseMiIsland: Boolean,
     val labUseMiIslandBlockingIntervalMs: Int,

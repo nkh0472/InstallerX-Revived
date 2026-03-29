@@ -41,6 +41,7 @@ class AppSettingsRepositoryImpl(
                 AppDataStore.AUTHORIZER,
                 if (capabilityProvider.isSystemApp) Authorizer.None.value else Authorizer.Shizuku.value
             ),
+            appDataStore.getBoolean(AppDataStore.ALWAYS_USE_ROOT_IN_SYSTEM, false),
             appDataStore.getString(AppDataStore.CUSTOMIZE_AUTHORIZER, ""),
             appDataStore.getString(AppDataStore.INSTALL_MODE, InstallMode.Dialog.value),
             appDataStore.getBoolean(AppDataStore.DIALOG_SHOW_EXTENDED_MENU, false),
@@ -73,7 +74,6 @@ class AppSettingsRepositoryImpl(
             // Lab settings
             appDataStore.getBoolean(AppDataStore.LAB_ENABLE_MODULE_FLASH, false),
             appDataStore.getBoolean(AppDataStore.LAB_MODULE_FLASH_SHOW_ART, true),
-            appDataStore.getBoolean(AppDataStore.LAB_MODULE_ALWAYS_ROOT, false),
             appDataStore.getString(AppDataStore.LAB_ROOT_IMPLEMENTATION, "Default"),
             appDataStore.getBoolean(AppDataStore.SHOW_MI_ISLAND, false),
             appDataStore.getInt(AppDataStore.SHOW_MI_ISLAND_BLOCKING_INTERVAL_MS, 100),
@@ -101,6 +101,7 @@ class AppSettingsRepositoryImpl(
         // Map raw strings back to Domain Enums
         val authorizerStr = values[idx++] as String
         val authorizer = Authorizer.entries.find { it.value == authorizerStr } ?: Authorizer.Global
+        val alwaysUseRootInSystem = values[idx++] as Boolean
         val customizeAuthorizer = values[idx++] as String
         val installModeStr = values[idx++] as String
         val installMode = InstallMode.entries.find { it.value == installModeStr } ?: InstallMode.Global
@@ -108,6 +109,7 @@ class AppSettingsRepositoryImpl(
         @Suppress("UNCHECKED_CAST")
         AppPreferences(
             authorizer = authorizer,
+            alwaysUseRootInSystem = alwaysUseRootInSystem,
             customizeAuthorizer = customizeAuthorizer,
             installMode = installMode,
             showDialogInstallExtendedMenu = values[idx++] as Boolean,
@@ -137,7 +139,6 @@ class AppSettingsRepositoryImpl(
             uninstallFlags = values[idx++] as Int,
             labRootEnableModuleFlash = values[idx++] as Boolean,
             labRootShowModuleArt = values[idx++] as Boolean,
-            labRootModuleAlwaysUseRoot = values[idx++] as Boolean,
             labRootImplementation = RootImplementation.fromString(values[idx++] as String),
             labUseMiIsland = values[idx++] as Boolean,
             labUseMiIslandBlockingIntervalMs = values[idx++] as Int,
@@ -237,6 +238,7 @@ class AppSettingsRepositoryImpl(
             BooleanSetting.LiveActivityDynColorFollowPkgIcon -> AppDataStore.LIVE_ACTIVITY_DYN_COLOR_FOLLOW_PKG_ICON
             BooleanSetting.ShowLiveActivity -> AppDataStore.SHOW_LIVE_ACTIVITY
             BooleanSetting.ShowMiIsland -> AppDataStore.SHOW_MI_ISLAND
+            BooleanSetting.AlwaysUseRootInSystem -> AppDataStore.ALWAYS_USE_ROOT_IN_SYSTEM
             BooleanSetting.InstallerRequireBiometricAuth -> AppDataStore.INSTALLER_REQUIRE_BIOMETRIC_AUTH
             BooleanSetting.UninstallerRequireBiometricAuth -> AppDataStore.UNINSTALLER_REQUIRE_BIOMETRIC_AUTH
             BooleanSetting.ShowLauncherIcon -> AppDataStore.SHOW_LAUNCHER_ICON
@@ -257,7 +259,6 @@ class AppSettingsRepositoryImpl(
             BooleanSetting.DialogAutoSilentInstall -> AppDataStore.DIALOG_AUTO_SILENT_INSTALL
             BooleanSetting.LabEnableModuleFlash -> AppDataStore.LAB_ENABLE_MODULE_FLASH
             BooleanSetting.LabModuleFlashShowArt -> AppDataStore.LAB_MODULE_FLASH_SHOW_ART
-            BooleanSetting.LabModuleAlwaysRoot -> AppDataStore.LAB_MODULE_ALWAYS_ROOT
             BooleanSetting.LabHttpSaveFile -> AppDataStore.LAB_HTTP_SAVE_FILE
             BooleanSetting.LabSetInstallRequester -> AppDataStore.LAB_SET_INSTALL_REQUESTER
             BooleanSetting.LabTapIconToShare -> AppDataStore.LAB_TAP_ICON_TO_SHARE

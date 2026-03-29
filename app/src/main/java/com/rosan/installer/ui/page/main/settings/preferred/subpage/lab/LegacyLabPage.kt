@@ -139,15 +139,6 @@ fun LegacyLabPage(
                             checked = uiState.labRootShowModuleArt,
                             onCheckedChange = { viewModel.dispatch(LabSettingsAction.LabChangeRootShowModuleArt(it)) }
                         )
-                        if (capabilityProvider.isSystemApp)
-                            SwitchWidget(
-                                icon = AppIcons.FlashPreferRoot,
-                                title = stringResource(R.string.lab_module_always_use_root),
-                                description = stringResource(R.string.lab_module_always_use_root_desc),
-                                isM3E = false,
-                                checked = uiState.labRootModuleAlwaysUseRoot,
-                                onCheckedChange = { viewModel.dispatch(LabSettingsAction.LabChangeRootModuleAlwaysUseRoot(it)) }
-                            )
                     }
                 }
             }

@@ -676,8 +676,6 @@
     <string name="permission_write_secure_settings">Изменять скрытые или критические системные настройки</string>
     <string name="installer_author">Автор: %1$s</string>
     <string name="exception_zip_exception">Не удалось открыть zip-архив как файл</string>
-    <string name="lab_module_always_use_root">Всегда использовать root для установки модулей</string>
-    <string name="lab_module_always_use_root_desc">При использовании как системным установщиком, всегда используйте root-права для установки модулей, чтобы добиться наилучшей производительности.</string>
     <string name="installer_notification_desc">Уведомление фоновой службы</string>
     <string name="installer_live_channel_short_text_pending_install">В ожидании</string>
     <string name="lab_mi_island_desc">Переопределение общего стиля уведомлений. Эта функция для обхода ограничений системной подписи сработает правильно, если авторизатором установлен Shizuku. Пользователи с root-правами могут включить её только после отключения проверки системной подписи</string>

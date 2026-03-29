@@ -115,7 +115,7 @@ class ProcessInstallationUseCase(
             appSettingsRepo.getString(StringSetting.LabRootImplementation).first()
         )
         val systemUseRoot = capabilityProvider.isSystemApp &&
-                appSettingsRepo.getBoolean(BooleanSetting.LabModuleAlwaysRoot, false).first()
+                appSettingsRepo.getBoolean(BooleanSetting.AlwaysUseRootInSystem, false).first()
 
         moduleInstaller.doInstallWork(
             config = config,

@@ -9,7 +9,6 @@ data class LabSettingsState(
     val useBlur: Boolean = true,
     val labRootEnableModuleFlash: Boolean = false,
     val labRootShowModuleArt: Boolean = true,
-    val labRootModuleAlwaysUseRoot: Boolean = false,
     val labRootImplementation: RootImplementation = RootImplementation.Magisk,
     val labUseMiIsland: Boolean = false,
     val labMiIslandBlockingIntervalMs: Int = 100,

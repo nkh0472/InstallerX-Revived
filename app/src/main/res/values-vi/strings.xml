@@ -538,8 +538,6 @@
     <string name="lab_module_flashing_desc">Luôn kiểm tra hai lần trước khi flash bất kỳ mô-đun nào!</string>
     <string name="lab_module_flashing_show_art">Hiển thị nghệ thuật ASCII</string>
     <string name="lab_module_flashing_show_art_desc">Hiển thị nghệ thuật ASCII InstallerX khi lần cài đặt bắt đầu</string>
-    <string name="lab_module_always_use_root">Luôn sử dụng root để flash các mô-đun</string>
-    <string name="lab_module_always_use_root_desc">Trong khi đang hoạt động như trình cài đặt hệ thống, luôn sử dụng root để flash các module nhằm đạt hiệu năng tốt nhất</string>
     <string name="lab_module_select_root_impl">Chọn triển khai root</string>
     <string name="lab_http_save_file">Lưu các tệp đã tải xuống</string>
     <string name="lab_http_save_file_desc">Lưu các tệp vào thư mục Tải xuống sau khi tải xuống hoàn tất</string>

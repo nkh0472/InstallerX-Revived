@@ -662,8 +662,6 @@
     <string name="old_version_uninstalled">Desisntalado</string>
     <string name="config_authorizer_none_system_app_tips">Funcionando como instalador del sistema, la mayoría de las opciones aquí no son necesarias.</string>
     <string name="installer_author">Autor: %1$s</string>
-    <string name="lab_module_always_use_root">Siempre usar root para flashear módulos</string>
-    <string name="lab_module_always_use_root_desc">Mientras trabajas como instalador de sistemas, usa siempre root al flashear modulso para obtener el mejor rendimiento</string>
     <string name="open_source_license_settings_description">Consulta la bibliotecas de código abierto de terceros y sus licencias</string>
     <string name="visit_home_page">Visitar página principal</string>
     <string name="license">Licencia: %s</string>

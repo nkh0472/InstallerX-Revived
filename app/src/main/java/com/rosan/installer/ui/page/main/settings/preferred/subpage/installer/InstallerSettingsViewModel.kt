@@ -32,6 +32,7 @@ class InstallerSettingsViewModel(
         InstallerSettingsState(
             useBlur = prefs.useBlur,
             authorizer = prefs.authorizer,
+            alwaysUseRootInSystem = prefs.alwaysUseRootInSystem,
             dhizukuAutoCloseCountDown = prefs.dhizukuAutoCloseCountDown,
             installMode = prefs.installMode,
             showLiveActivity = prefs.showLiveActivity,
@@ -62,6 +63,13 @@ class InstallerSettingsViewModel(
                 updateSetting(
                     StringSetting.Authorizer,
                     action.authorizer.value
+                )
+            }
+
+            is InstallerSettingsAction.ChangeAlwaysUseRootInSystem -> viewModelScope.launch {
+                updateSetting(
+                    BooleanSetting.AlwaysUseRootInSystem,
+                    action.alwaysUseRootInSystem
                 )
             }
 
