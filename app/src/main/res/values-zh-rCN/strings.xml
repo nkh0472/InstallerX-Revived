@@ -721,7 +721,7 @@
     <string name="lab_mi_island">小米超级岛</string>
     <string name="lab_mi_island_desc">覆盖全局通知样式。仅当应用授权器设置为 Shizuku 时可绕过系统签名限制；Root 用户在手动关闭系统签名验证后可直接开启</string>
     <string name="lab_mi_island_countdown">XMSF 断网时长（仅 Shizuku）</string>
-    <string name="lab_mi_island_countdown_desc">设置使用 Shizuku 时 XMSF 的断网时间。仅在明确影响时修改！</string>
+    <string name="lab_mi_island_countdown_desc">设置使用 Shizuku 时 XMSF 的断网时间，使用 root 激活 Shizuku 时不会生效。仅在明确影响时修改！</string>
     <string name="lab_tap_icon_to_share">点击图标分享安装包</string>
     <string name="lab_tap_icon_to_share_desc">在安装准备界面点击应用图标即可分享安装包</string>
 </resources>
