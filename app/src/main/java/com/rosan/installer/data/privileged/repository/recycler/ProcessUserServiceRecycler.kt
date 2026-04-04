@@ -13,6 +13,7 @@ import androidx.annotation.Keep
 import com.rosan.app_process.AppProcess
 import com.rosan.installer.IAppProcessService
 import com.rosan.installer.IPrivilegedService
+import com.rosan.installer.core.env.AppConfig
 import com.rosan.installer.data.privileged.model.DefaultPrivilegedService
 import com.rosan.installer.data.privileged.repository.recyclable.Recyclable
 import com.rosan.installer.data.privileged.repository.recyclable.Recycler
@@ -56,6 +57,7 @@ class ProcessUserServiceRecycler(
 
     class AppProcessService @Keep constructor(context: Context) : IAppProcessService.Stub() {
         init {
+            if (AppConfig.isDebug && Timber.treeCount == 0) Timber.plant(Timber.DebugTree())
             if (GlobalContext.getOrNull() == null) {
                 startKoin {
                     modules(processModules)

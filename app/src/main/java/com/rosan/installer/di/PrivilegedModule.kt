@@ -57,19 +57,18 @@ val privilegedModule = module {
 
     // 1. Recycler Managers (Singletons)
     // Add named qualifier to distinguish this manager
-    single(named("AppProcessManager")) {
+    single(RecyclerNames.APP_PROCESS) {
         RecyclerManager<String, AppProcessRecycler> { shell ->
             AppProcessRecycler(shell)
         }
     }
 
     // Add named qualifier to distinguish this manager
-    single(named("ProcessUserServiceManager")) {
+    single(RecyclerNames.USER_SERVICE) {
         RecyclerManager<String, ProcessUserServiceRecycler> { shell ->
             ProcessUserServiceRecycler(
                 shell = shell,
                 context = get(),
-                // Use get(named(...)) to retrieve the correct manager
                 appProcessRecyclerManager = get(RecyclerNames.APP_PROCESS)
             )
         }

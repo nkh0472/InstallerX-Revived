@@ -103,12 +103,10 @@ private fun getRecyclableInstance(
 
             if (useHookMode) {
                 Timber.tag(TAG).d("Using ProcessHookRecycler with shell: $targetShell")
-                // Use Koin's parameter injection for factory
                 koin.get<ProcessHookRecycler> { parametersOf(targetShell) }.make()
             } else {
                 Timber.tag(TAG).d("Using ProcessUserServiceRecycler with shell: $targetShell")
-                // Retrieve the Manager from Koin, then get the specific shell recycler
-                koin.get<RecyclerManager<String, ProcessUserServiceRecycler>>().get(targetShell).make()
+                koin.get<RecyclerManager<String, ProcessUserServiceRecycler>>(RecyclerNames.USER_SERVICE).get(targetShell).make()
             }
         }
 
@@ -126,12 +124,12 @@ private fun getRecyclableInstance(
 
         Authorizer.Customize -> {
             val targetShell = customizeAuthorizer.ifBlank { SHELL_ROOT }
-            // Add named("ProcessUserServiceManager")
+            Timber.tag(TAG).d("Using ProcessUserServiceRecycler with shell: $targetShell")
             koin.get<RecyclerManager<String, ProcessUserServiceRecycler>>(RecyclerNames.USER_SERVICE).get(targetShell).make()
         }
 
         else -> specialShell?.let {
-            // Add named("ProcessUserServiceManager")
+            Timber.tag(TAG).d("Using ProcessUserServiceRecycler with shell: $it")
             koin.get<RecyclerManager<String, ProcessUserServiceRecycler>>(RecyclerNames.USER_SERVICE).get(it).make()
         }
     }
