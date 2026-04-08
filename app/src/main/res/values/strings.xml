@@ -393,6 +393,7 @@
     <string name="installer_live_channel_name">Install Progress Live Update</string>
     <string name="installer_live_channel_name_desc">Show install progress as live update</string>
     <string name="installer_live_channel_short_text_resolving">Resolving</string>
+    <string name="installer_resolving_desc">Parsing installable content from the input…</string>
     <string name="installer_live_channel_short_text_preparing">Preparing</string>
     <string name="installer_live_channel_short_text_analysing">Analysing</string>
     <string name="installer_live_channel_short_text_pending">Pending</string>

@@ -1,6 +1,5 @@
 package com.rosan.installer.domain.engine.model
 
-import android.R
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -15,8 +14,14 @@ data class AppEntityInfo(
 
 fun AppEntity.getInfo(context: Context): AppEntityInfo = when (this) {
     is AppEntity.BaseEntity -> AppEntityInfo(
-        icon = this.icon ?: ContextCompat.getDrawable(context, R.drawable.sym_def_app_icon),
+        icon = this.icon ?: ContextCompat.getDrawable(context, android.R.drawable.sym_def_app_icon),
         title = this.label ?: this.packageName
+    )
+    // Handle ModuleEntity specifically to extract the real name from module.prop
+    // Fallback to packageName (which maps to module id) if the name is somehow empty
+    is AppEntity.ModuleEntity -> AppEntityInfo(
+        icon = this.icon ?: ContextCompat.getDrawable(context, android.R.drawable.sym_def_app_icon),
+        title = this.name.ifEmpty { this.packageName }
     )
 
     else -> {
@@ -36,7 +41,7 @@ fun AppEntity.getInfo(context: Context): AppEntityInfo = when (this) {
         val icon = applicationInfo?.loadIcon(packageManager)
         val label = applicationInfo?.loadLabel(packageManager)?.toString()
         AppEntityInfo(
-            icon = icon ?: ContextCompat.getDrawable(context, R.drawable.sym_def_app_icon),
+            icon = icon ?: ContextCompat.getDrawable(context, android.R.drawable.sym_def_app_icon),
             title = label ?: this.packageName
         )
     }

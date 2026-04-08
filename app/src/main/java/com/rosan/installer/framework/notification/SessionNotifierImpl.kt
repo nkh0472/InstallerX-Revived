@@ -24,9 +24,14 @@ import com.rosan.installer.domain.settings.model.Authorizer
 import com.rosan.installer.domain.settings.repository.AppSettingsRepository
 import com.rosan.installer.domain.settings.repository.BooleanSetting
 import com.rosan.installer.domain.settings.repository.IntSetting
+import com.rosan.installer.framework.notification.builder.AnimationContext
+import com.rosan.installer.framework.notification.builder.InstallState
+import com.rosan.installer.framework.notification.builder.InstallerNotificationBuilder
 import com.rosan.installer.framework.notification.builder.LegacyNotificationBuilder
 import com.rosan.installer.framework.notification.builder.MiIslandNotificationBuilder
 import com.rosan.installer.framework.notification.builder.ModernNotificationBuilder
+import com.rosan.installer.framework.notification.builder.NotificationPayload
+import com.rosan.installer.framework.notification.builder.UserSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
@@ -101,13 +106,8 @@ class SessionNotifierImpl(
         }
     }
 
-    // Delegated Builders
+    // Delegated Builders utilizing the Strategy Interface
     private val helper by lazy { NotificationHelper(context, session, getAppIcon) }
-    private val miIslandBuilder by lazy { MiIslandNotificationBuilder(context, session, helper) }
-    private val legacyBuilder by lazy { LegacyNotificationBuilder(context, session, helper) }
-    private val modernBuilder by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) ModernNotificationBuilder(context, session, helper) else null
-    }
 
     override fun updateState(progress: ProgressEntity, background: Boolean) {
         stateFlow.value = Pair(progress, background)
@@ -147,6 +147,12 @@ class SessionNotifierImpl(
             val isModernEligible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA
             val canAnimate = isModernEligible && settings.showLiveActivity && !settings.showMiIsland
 
+            val activeBuilder: InstallerNotificationBuilder = when {
+                settings.showMiIsland -> MiIslandNotificationBuilder(context, session, helper)
+                isModernEligible && settings.showLiveActivity -> ModernNotificationBuilder(context, session, helper)
+                else -> LegacyNotificationBuilder(context, session, helper)
+            }
+
             val ticker = flow {
                 while (true) {
                     emit(Unit)
@@ -176,26 +182,25 @@ class SessionNotifierImpl(
                         val isSameState = lastNotifiedEntity?.let { it::class == progress::class } == true
                         val currentRequiresAnimation = canAnimate && progress is ProgressEntity.Installing
 
-                        val notification = when {
-                            settings.showMiIsland -> miIslandBuilder.build(
-                                progress,
-                                true,
-                                settings.showDialog,
-                                settings.preferSystemIcon,
-                                fakeItemProgress
+                        // Pack all context into a single consistent payload
+                        val payload = NotificationPayload(
+                            state = InstallState(
+                                progress = progress,
+                                background = true,
+                                isSameState = isSameState
+                            ),
+                            settings = UserSettings(
+                                showDialog = settings.showDialog,
+                                preferSystemIcon = settings.preferSystemIcon,
+                                preferDynamicColor = settings.preferDynamicColor
+                            ),
+                            animation = AnimationContext(
+                                fakeItemProgress = fakeItemProgress
                             )
+                        )
 
-                            isModernEligible && settings.showLiveActivity -> modernBuilder?.build(
-                                progress,
-                                settings.showDialog,
-                                settings.preferSystemIcon,
-                                settings.preferDynamicColor,
-                                fakeItemProgress,
-                                isSameState
-                            )
-
-                            else -> legacyBuilder.build(progress, true, settings.showDialog, settings.preferSystemIcon)
-                        }
+                        // Delegate to the correct builder strategy
+                        val notification = activeBuilder.build(payload)
 
                         setNotificationThrottled(
                             notification,

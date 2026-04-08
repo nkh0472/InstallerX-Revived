@@ -381,6 +381,7 @@
     <string name="installer_live_channel_name">安装进度实时活动</string>
     <string name="installer_live_channel_name_desc">以实时活动形式展示通知进度</string>
     <string name="installer_live_channel_short_text_resolving">解析中</string>
+    <string name="installer_resolving_desc">正在从输入内容中解析可安装的应用…</string>
     <string name="installer_live_channel_short_text_preparing">准备中</string>
     <string name="installer_live_channel_short_text_analysing">分析中</string>
     <string name="installer_live_channel_short_text_pending">待处理</string>
