@@ -462,7 +462,10 @@ fun NewThemeSettingsPage(
                     title = stringResource(R.string.theme_settings_predictive_back)
                 ) {
                     item { PredictiveBackAnimationWidget(uiState) { showPredictiveBackAnimationDialog = true } }
-                    item(visible = uiState.predictiveBackAnimation == PredictiveBackAnimation.Scale) {
+                    item(
+                        visible = uiState.predictiveBackAnimation == PredictiveBackAnimation.Scale ||
+                                uiState.predictiveBackAnimation == PredictiveBackAnimation.AOSP
+                    ) {
                         PredictiveBackAnimationDirectionWidget(uiState) { showPredictiveBackExitDirectionDialog = true }
                     }
                 }

@@ -363,7 +363,8 @@ fun MiuixThemeSettingsPage(
                     )
 
                     AnimatedVisibility(
-                        visible = uiState.predictiveBackAnimation == PredictiveBackAnimation.Scale,
+                        visible = uiState.predictiveBackAnimation == PredictiveBackAnimation.Scale ||
+                                uiState.predictiveBackAnimation == PredictiveBackAnimation.AOSP,
                         enter = fadeIn() + expandVertically(),
                         exit = fadeOut() + shrinkVertically()
                     ) {

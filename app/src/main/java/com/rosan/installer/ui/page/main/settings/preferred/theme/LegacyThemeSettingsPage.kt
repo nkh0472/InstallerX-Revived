@@ -369,7 +369,8 @@ fun LegacyThemeSettingsPage(
             item { PredictiveBackAnimationWidget(uiState) { showPredictiveBackAnimationDialog = true } }
             item {
                 AnimatedVisibility(
-                    visible = uiState.predictiveBackAnimation == PredictiveBackAnimation.Scale,
+                    visible = uiState.predictiveBackAnimation == PredictiveBackAnimation.Scale ||
+                            uiState.predictiveBackAnimation == PredictiveBackAnimation.AOSP,
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically()
                 ) {
