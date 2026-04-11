@@ -657,8 +657,6 @@ private fun ItemContent(app: AppEntity) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            // Should never happen!
-            else -> null
         }
     }
 }

@@ -51,7 +51,6 @@ class AboutViewModel(
         _appIcon
     ) { prefs, updateInfo, appIcon ->
         AboutState(
-            useBlur = prefs.useBlur,
             authorizer = prefs.authorizer,
             hasUpdate = updateInfo?.hasUpdate ?: false,
             remoteVersion = updateInfo?.remoteVersion ?: "",

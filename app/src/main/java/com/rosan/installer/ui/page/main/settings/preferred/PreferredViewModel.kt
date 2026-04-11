@@ -50,7 +50,6 @@ class PreferredViewModel(
         val customizeAuthorizer = if (prefs.authorizer == Authorizer.Customize) prefs.customizeAuthorizer else ""
 
         PreferredViewState(
-            useBlur = prefs.useBlur,
             authorizer = prefs.authorizer,
             customizeAuthorizer = customizeAuthorizer,
             autoLockInstaller = prefs.autoLockInstaller,

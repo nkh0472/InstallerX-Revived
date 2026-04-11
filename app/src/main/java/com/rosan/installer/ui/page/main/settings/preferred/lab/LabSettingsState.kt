@@ -7,7 +7,6 @@ import com.rosan.installer.domain.settings.model.HttpProfile
 import com.rosan.installer.domain.settings.model.RootMode
 
 data class LabSettingsState(
-    val useBlur: Boolean = true,
     val labRootEnableModuleFlash: Boolean = false,
     val labRootShowModuleArt: Boolean = true,
     val labRootMode: RootMode = RootMode.Magisk,
