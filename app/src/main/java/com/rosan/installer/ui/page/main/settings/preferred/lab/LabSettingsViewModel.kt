@@ -28,7 +28,9 @@ class LabSettingsViewModel(
             labSetInstallRequester = prefs.labSetInstallRequester,
             labHttpProfile = prefs.labHttpProfile,
             labHttpSaveFile = prefs.labHttpSaveFile,
-            labTapIconToShare = prefs.labTapIconToShare
+            labTapIconToShare = prefs.labTapIconToShare,
+            githubUpdateChannel = prefs.githubUpdateChannel,
+            customGithubProxyUrl = prefs.customGithubProxyUrl
         )
     }.stateIn(
         scope = viewModelScope,
@@ -84,6 +86,20 @@ class LabSettingsViewModel(
                 updateSetting(
                     BooleanSetting.LabTapIconToShare,
                     action.enable
+                )
+            }
+
+            is LabSettingsAction.LabChangeGithubUpdateChannel -> viewModelScope.launch {
+                updateSetting(
+                    StringSetting.GithubUpdateChannel,
+                    action.channel.name
+                )
+            }
+
+            is LabSettingsAction.LabChangeCustomGithubProxyUrl -> viewModelScope.launch {
+                updateSetting(
+                    StringSetting.CustomGithubProxyUrl,
+                    action.url
                 )
             }
         }

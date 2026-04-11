@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rosan.installer.R
 import com.rosan.installer.core.env.AppConfig
+import com.rosan.installer.domain.settings.model.GithubUpdateChannel
 import com.rosan.installer.domain.settings.model.HttpProfile
 import com.rosan.installer.domain.settings.model.RootMode
 import com.rosan.installer.ui.icons.AppIcons
@@ -41,6 +42,8 @@ import com.rosan.installer.ui.navigation.LocalNavigator
 import com.rosan.installer.ui.page.main.settings.preferred.lab.LabSettingsAction
 import com.rosan.installer.ui.page.main.settings.preferred.lab.LabSettingsViewModel
 import com.rosan.installer.ui.page.miuix.widgets.MiuixBackButton
+import com.rosan.installer.ui.page.miuix.widgets.MiuixCustomGithubProxyUrlDialog
+import com.rosan.installer.ui.page.miuix.widgets.MiuixGithubUpdateChannelSelectionDialog
 import com.rosan.installer.ui.page.miuix.widgets.MiuixRootImplementationDialog
 import com.rosan.installer.ui.page.miuix.widgets.MiuixSettingsTipCard
 import com.rosan.installer.ui.page.miuix.widgets.MiuixSwitchWidget
@@ -50,6 +53,7 @@ import com.rosan.installer.ui.theme.rememberMiuixHazeStyle
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import org.koin.androidx.compose.koinViewModel
+import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
@@ -70,6 +74,38 @@ fun MiuixLabPage(
     val hazeState = if (uiState.useBlur) remember { HazeState() } else null
     val hazeStyle = rememberMiuixHazeStyle()
     val showRootImplementationDialog = remember { mutableStateOf(false) }
+    val showChannelDialog = remember { mutableStateOf(false) }
+    val showCustomProxyDialog = remember { mutableStateOf(false) }
+
+    if (showChannelDialog.value)
+        MiuixGithubUpdateChannelSelectionDialog(
+            showState = showChannelDialog,
+            currentSelection = uiState.githubUpdateChannel,
+            onDismiss = { showChannelDialog.value = false },
+            onConfirm = { channel ->
+                showChannelDialog.value = false
+                viewModel.dispatch(LabSettingsAction.LabChangeGithubUpdateChannel(channel))
+                if (channel == GithubUpdateChannel.CUSTOM)
+                    showCustomProxyDialog.value = true
+            }
+        )
+
+    if (showCustomProxyDialog.value)
+        MiuixCustomGithubProxyUrlDialog(
+            showState = showCustomProxyDialog,
+            initialUrl = uiState.customGithubProxyUrl,
+            onDismiss = {
+                showCustomProxyDialog.value = false
+                if (uiState.customGithubProxyUrl.isEmpty())
+                    viewModel.dispatch(LabSettingsAction.LabChangeGithubUpdateChannel(GithubUpdateChannel.OFFICIAL))
+            },
+            onConfirm = { url ->
+                showCustomProxyDialog.value = false
+                viewModel.dispatch(LabSettingsAction.LabChangeCustomGithubProxyUrl(url))
+                if (url.isEmpty())
+                    viewModel.dispatch(LabSettingsAction.LabChangeGithubUpdateChannel(GithubUpdateChannel.OFFICIAL))
+            }
+        )
 
     MiuixRootImplementationDialog(
         showState = showRootImplementationDialog,
@@ -247,6 +283,21 @@ fun MiuixLabPage(
                                     viewModel.dispatch(LabSettingsAction.LabChangeHttpProfile(profile))
                                 }
                             }
+                        )
+
+                        val currentChannel = uiState.githubUpdateChannel
+                        val channelSummary = when (currentChannel) {
+                            GithubUpdateChannel.OFFICIAL -> stringResource(R.string.lab_update_github_proxy_official)
+                            GithubUpdateChannel.PROXY_7ED -> stringResource(R.string.lab_update_github_proxy_7ed)
+                            GithubUpdateChannel.CUSTOM -> uiState.customGithubProxyUrl.ifBlank {
+                                stringResource(R.string.lab_update_github_proxy_custom)
+                            }
+                        }
+
+                        BasicComponent(
+                            title = stringResource(R.string.lab_update_github_proxy),
+                            summary = channelSummary,
+                            onClick = { showChannelDialog.value = true }
                         )
                     }
                 }
