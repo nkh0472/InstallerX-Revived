@@ -704,7 +704,6 @@
     <string name="theme_settings_predictive_back_animation_aosp">AOSP</string>
     <string name="theme_settings_predictive_back_animation_scale">スケーリング</string>
     <string name="theme_settings_predictive_back_animation_ksu_classic">KernelSU Classic</string>
-    <string name="theme_settings_predictive_back_animation_ksu_official">KernelSU 公式</string>
     <string name="theme_settings_predictive_back_exit_direction_follow_gesture">ジェスチャーに従う</string>
     <string name="theme_settings_predictive_back_exit_direction_always_right">常に右</string>
     <string name="theme_settings_predictive_back_exit_direction_always_left">常に左</string>

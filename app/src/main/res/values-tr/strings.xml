@@ -725,7 +725,6 @@
     <string name="theme_settings_predictive_back_animation_aosp">AOSP</string>
     <string name="theme_settings_predictive_back_animation_scale">Ölçek</string>
     <string name="theme_settings_predictive_back_animation_ksu_classic">Klasik KernelSU</string>
-    <string name="theme_settings_predictive_back_animation_ksu_official">Resmi KernelSU</string>
     <string name="theme_settings_predictive_back_exit_direction_follow_gesture">Hareketi İzle</string>
     <string name="theme_settings_predictive_back_exit_direction_always_left">Her zaman Sol</string>
     <string name="theme_settings_predictive_back_exit_direction_always_right">Her zaman Sağ</string>

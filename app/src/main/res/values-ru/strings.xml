@@ -737,7 +737,6 @@
     <string name="theme_settings_predictive_back_exit_direction">Направление перехода</string>
     <string name="theme_settings_predictive_back_exit_direction_desc">Выберите направление перехода для возврата назад (только для масштабирования)</string>
     <string name="theme_settings_predictive_back_animation_ksu_classic">Классический KernelSU</string>
-    <string name="theme_settings_predictive_back_animation_ksu_official">Официальный KernelSU</string>
     <string name="theme_settings_predictive_back_exit_direction_follow_gesture">По направлению жеста</string>
     <string name="theme_settings_predictive_back">Эффекты перехода назад</string>
     <string name="theme_settings_predictive_back_animation">Стиль анимации</string>

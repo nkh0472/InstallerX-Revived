@@ -720,7 +720,6 @@
     <string name="theme_settings_predictive_back_animation_aosp">AOSP</string>
     <string name="theme_settings_predictive_back_animation_scale">Chia tỷ lệ</string>
     <string name="theme_settings_predictive_back_animation_ksu_classic">KernelSU Cổ điển</string>
-    <string name="theme_settings_predictive_back_animation_ksu_official">KernelSU Chính thức</string>
     <string name="theme_settings_predictive_back_exit_direction_follow_gesture">Theo Cử chỉ</string>
     <string name="theme_settings_predictive_back_exit_direction_always_right">Luôn Bên phải</string>
     <string name="theme_settings_predictive_back_exit_direction_always_left">Luôn Bên trái</string>
