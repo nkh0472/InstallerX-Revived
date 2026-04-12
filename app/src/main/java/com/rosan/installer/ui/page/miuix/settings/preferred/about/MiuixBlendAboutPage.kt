@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Copyright (C) 2025-2026 InstallerX Revived contributors
+@file:OptIn(ExperimentalScrollBarApi::class) // Opt-in for ExperimentalScrollBarApi
+
 package com.rosan.installer.ui.page.miuix.settings.preferred.about
 
 import android.content.Context
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -23,12 +27,15 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -102,6 +109,8 @@ import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
+import top.yukonga.miuix.kmp.basic.VerticalScrollBar
+import top.yukonga.miuix.kmp.basic.rememberScrollBarAdapter
 import top.yukonga.miuix.kmp.blur.BlendColorEntry
 import top.yukonga.miuix.kmp.blur.BlurBlendMode
 import top.yukonga.miuix.kmp.blur.BlurColors
@@ -111,12 +120,16 @@ import top.yukonga.miuix.kmp.blur.isRuntimeShaderSupported
 import top.yukonga.miuix.kmp.blur.layerBackdrop
 import top.yukonga.miuix.kmp.blur.rememberLayerBackdrop
 import top.yukonga.miuix.kmp.blur.textureBlur
+import top.yukonga.miuix.kmp.interfaces.ExperimentalScrollBarApi
 import top.yukonga.miuix.kmp.overlay.OverlayBottomSheet
+import top.yukonga.miuix.kmp.shapes.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 import top.yukonga.miuix.kmp.window.WindowDialog
+import androidx.compose.ui.graphics.BlendMode as ComposeBlendMode
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun MiuixBlendAboutPage(
     viewModel: AboutViewModel = koinViewModel()
@@ -196,6 +209,7 @@ fun MiuixBlendAboutPage(
                 scrollBehavior = topAppBarScrollBehavior,
                 color = MiuixTheme.colorScheme.surface.copy(alpha = if (scrollProgress == 1f) 1f else 0f),
                 titleColor = MiuixTheme.colorScheme.onSurface.copy(alpha = scrollProgress),
+                defaultWindowInsetsPadding = false, // Synced from upstream to handle insets correctly
                 navigationIcon = { MiuixBackButton(onClick = { navigator.pop() }) }
             )
         },
@@ -244,6 +258,7 @@ fun MiuixBlendAboutPage(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 private fun AboutContentBody(
     padding: PaddingValues,
@@ -365,18 +380,21 @@ private fun AboutContentBody(
             .collect { }
     }
 
+    // Calculate insets to handle display cutouts properly, syncing with upstream behavior
+    val displayCutoutInsets = WindowInsets.displayCutout.asPaddingValues()
     val horizontalSafeInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues()
 
     val listContentPadding = PaddingValues(
-        start = horizontalSafeInsets.calculateStartPadding(layoutDirection),
+        start = horizontalSafeInsets.calculateStartPadding(layoutDirection) + displayCutoutInsets.calculateLeftPadding(layoutDirection),
         top = padding.calculateTopPadding(),
-        end = horizontalSafeInsets.calculateEndPadding(layoutDirection)
+        end = horizontalSafeInsets.calculateEndPadding(layoutDirection) + displayCutoutInsets.calculateRightPadding(layoutDirection),
+        bottom = padding.calculateBottomPadding()
     )
 
     val logoPadding = PaddingValues(
         top = padding.calculateTopPadding() + 40.dp,
-        start = horizontalSafeInsets.calculateStartPadding(layoutDirection),
-        end = horizontalSafeInsets.calculateEndPadding(layoutDirection)
+        start = horizontalSafeInsets.calculateStartPadding(layoutDirection) + displayCutoutInsets.calculateLeftPadding(layoutDirection),
+        end = horizontalSafeInsets.calculateEndPadding(layoutDirection) + displayCutoutInsets.calculateRightPadding(layoutDirection)
     )
 
     BgEffectBackground(
@@ -384,7 +402,7 @@ private fun AboutContentBody(
         modifier = Modifier.fillMaxSize(),
         bgModifier = Modifier.layerBackdrop(backdrop),
         effectBackground = effectBackground.value,
-        alpha = 1f - scrollProgress,
+        alpha = { 1f - scrollProgress }, // Synced: Using lambda to defer state read and improve performance
     ) {
         // Sticky animated header section
         Column(
@@ -400,10 +418,11 @@ private fun AboutContentBody(
                 },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            // Synced: App logo container background, clip, and shape update
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(88.dp) // Synced: Updated size
                     .graphicsLayer {
                         alpha = 1 - iconProgress
                         scaleX = 1 - (iconProgress * 0.05f)
@@ -419,11 +438,7 @@ private fun AboutContentBody(
                 Image(
                     painter = painterResource(id = R.drawable.ic_launcher_monochrome),
                     modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer {
-                            scaleX = 2.0f
-                            scaleY = 2.0f
-                        }
+                        .requiredSize(160.dp)
                         .textureBlur(
                             backdrop = backdrop,
                             shape = RoundedRectangle(16.dp),
@@ -453,11 +468,11 @@ private fun AboutContentBody(
                     }
                     .textureBlur(
                         backdrop = backdrop,
-                        shape = RoundedRectangle(16.dp),
-                        blurRadius = 200f,
-                        noiseCoefficient = BlurDefaults.NoiseCoefficient,
+                        shape = SmoothRoundedCornerShape(16.dp), // Synced: Use smooth squircle shape
+                        blurRadius = 150f, // Synced: Updated blur radius
+                        noiseCoefficient = noiseCoefficient,
                         colors = BlurColors(blendColors = logoBlend),
-                        contentBlendMode = BlendMode.DstIn,
+                        contentBlendMode = ComposeBlendMode.DstIn,
                         enabled = blurEnable,
                     ),
                 text = stringResource(id = R.string.app_name),
@@ -549,7 +564,7 @@ private fun AboutContentBody(
                             .padding(bottom = 12.dp)
                             .textureBlur(
                                 backdrop = backdrop,
-                                shape = RoundedRectangle(16.dp),
+                                shape = SmoothRoundedCornerShape(16.dp), // Synced: Use smooth squircle shape
                                 blurRadius = blurRadius,
                                 noiseCoefficient = noiseCoefficient,
                                 colors = BlurColors(
@@ -597,7 +612,7 @@ private fun AboutContentBody(
                                 .padding(bottom = 12.dp)
                                 .textureBlur(
                                     backdrop = backdrop,
-                                    shape = RoundedRectangle(16.dp),
+                                    shape = SmoothRoundedCornerShape(16.dp), // Synced: Use smooth squircle shape
                                     blurRadius = blurRadius,
                                     noiseCoefficient = noiseCoefficient,
                                     colors = BlurColors(
@@ -636,6 +651,15 @@ private fun AboutContentBody(
                 }
             }
         }
+
+        // Synced: Added vertical scroll bar
+        VerticalScrollBar(
+            adapter = rememberScrollBarAdapter(lazyListState),
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight(),
+            trackPadding = listContentPadding,
+        )
     }
 
     // Dev mode texture settings bottom sheet
