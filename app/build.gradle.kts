@@ -259,9 +259,6 @@ dependencies {
     implementation(libs.shapes)
     implementation(libs.capsule)
     implementation(libs.backdrop)
-    // haze
-    implementation(libs.haze)
-    implementation(libs.haze.materials)
 
     // okhttp
     implementation(platform(libs.okhttp.bom))

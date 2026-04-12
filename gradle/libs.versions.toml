@@ -17,7 +17,6 @@ kotlin = "2.3.20"
 ksp = "2.3.6"
 composeBom = "2026.03.01"
 compose = "1.10.6"
-haze = "1.7.2"
 splashScreen = "1.2.0"
 material3 = "1.5.0-alpha17"
 room = "2.8.4"
@@ -59,8 +58,6 @@ shapes = { module = "io.github.kyant0:shapes", version.ref = "kyant-shapes" }
 capsule = { module = "io.github.kyant0:capsule", version.ref = "kyant-capsule" }
 backdrop = { module = "io.github.kyant0:backdrop", version.ref = "backdrop" }
 focus-api = { module = "com.xzakota.hyper.notification:focus-api", version.ref = "focusApi" }
-haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
-haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "compose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
