@@ -31,7 +31,7 @@ import org.koin.core.component.get
 
 @Database(
     entities = [AppEntity::class, ConfigEntity::class],
-    version = 13,
+    version = 14,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 3, to = 4),
@@ -42,7 +42,8 @@ import org.koin.core.component.get
         AutoMigration(from = 8, to = 9),
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 10, to = 11),
-        AutoMigration(from = 11, to = 12)
+        AutoMigration(from = 11, to = 12),
+        AutoMigration(from = 13, to = 14),
     ]
 )
 @TypeConverters(

@@ -87,6 +87,7 @@ class EditViewModel(
                     is EditViewAction.ChangeDataRequestUpdateOwnership -> changeDataRequestUpdateOwnership(action.requestUpdateOwnership)
                     is EditViewAction.ChangeSplitChooseAll -> changeSplitChooseAll(action.splitChooseAll)
                     is EditViewAction.ChangeApkChooseAll -> changeApkChooseAll(action.apkChooseAll)
+                    is EditViewAction.ChangeRequireBiometricAuth -> changeRequireBiometricAuth(action.require)
                     is EditViewAction.LoadData -> loadData()
                     is EditViewAction.SaveData -> saveData()
                 }
@@ -274,6 +275,10 @@ class EditViewModel(
         _state.update { it.copy(data = it.data.copy(apkChooseAll = apkChooseAll)) }
     }
 
+    private fun changeRequireBiometricAuth(require: Boolean) {
+        _state.update { it.copy(data = it.data.copy(requireBiometricAuth = require)) }
+    }
+
     private fun loadAvailableUsers() {
         viewModelScope.launch {
             val currentState = _state.value
@@ -313,7 +318,7 @@ class EditViewModel(
                     data = initialData,
                     originalData = initialData,
                     globalAuthorizer = prefs.authorizer,
-                    globalInstallMode = prefs.installMode,
+                    globalInstallerBiometricAuthMode = prefs.installerRequireBiometricAuth,
                     managedInstallerPackages = managedPackages,
                     availableUsers = emptyMap(),
                     isCustomInstallRequesterEnabled = isCustomInstallRequesterEnabled

@@ -202,6 +202,9 @@ fun NewEditPage(
                         DataCustomizeAuthorizerWidget(state, dispatch)
                     }
                     item { DataInstallModeWidget(state, dispatch) }
+                    item(visible = state.globalInstallerBiometricAuthMode == com.rosan.installer.domain.settings.model.BiometricAuthMode.FollowConfig) {
+                        DataRequireBiometricAuthWidget(state, dispatch)
+                    }
                     item { DataShowToastWidget(state, dispatch) }
                 }
             }
