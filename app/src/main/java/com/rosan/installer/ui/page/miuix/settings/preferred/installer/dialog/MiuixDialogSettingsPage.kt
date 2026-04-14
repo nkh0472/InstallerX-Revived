@@ -92,23 +92,23 @@ fun MiuixDialogSettingsPage(
                         .padding(horizontal = 12.dp)
                         .padding(bottom = 12.dp)
                 ) {
-                    MiuixSwitchWidget(
-                        title = stringResource(id = R.string.version_compare_in_single_line),
-                        description = stringResource(id = R.string.version_compare_in_single_line_desc),
-                        checked = uiState.versionCompareInSingleLine,
-                        onCheckedChange = {
-                            viewModel.dispatch(DialogSettingsAction.ChangeVersionCompareInSingleLine(it))
-                        }
-                    )
+                    /* MiuixSwitchWidget(
+                         title = stringResource(id = R.string.version_compare_in_single_line),
+                         description = stringResource(id = R.string.version_compare_in_single_line_desc),
+                         checked = uiState.versionCompareInSingleLine,
+                         onCheckedChange = {
+                             viewModel.dispatch(DialogSettingsAction.ChangeVersionCompareInSingleLine(it))
+                         }
+                     )
 
-                    MiuixSwitchWidget(
-                        title = stringResource(id = R.string.sdk_compare_in_multi_line),
-                        description = stringResource(id = R.string.sdk_compare_in_multi_line_desc),
-                        checked = uiState.sdkCompareInMultiLine,
-                        onCheckedChange = {
-                            viewModel.dispatch(DialogSettingsAction.ChangeSdkCompareInMultiLine(it))
-                        }
-                    )
+                     MiuixSwitchWidget(
+                         title = stringResource(id = R.string.sdk_compare_in_multi_line),
+                         description = stringResource(id = R.string.sdk_compare_in_multi_line_desc),
+                         checked = uiState.sdkCompareInMultiLine,
+                         onCheckedChange = {
+                             viewModel.dispatch(DialogSettingsAction.ChangeSdkCompareInMultiLine(it))
+                         }
+                     )*/
 
                     MiuixSwitchWidget(
                         title = stringResource(id = R.string.show_dialog_install_extended_menu),
