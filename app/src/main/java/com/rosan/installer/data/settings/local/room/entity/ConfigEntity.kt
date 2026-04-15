@@ -2,10 +2,10 @@
 // Copyright (C) 2023-2026 iamr0s, InstallerX Revived contributors
 package com.rosan.installer.data.settings.local.room.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.Ignore
+import androidx.room3.PrimaryKey
 import com.rosan.installer.domain.settings.model.Authorizer
 import com.rosan.installer.domain.settings.model.DexoptMode
 import com.rosan.installer.domain.settings.model.InstallMode
