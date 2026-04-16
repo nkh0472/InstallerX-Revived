@@ -219,7 +219,12 @@ class AppSettingsRepositoryImpl(
     override fun getNamedPackageList(
         setting: NamedPackageListSetting,
         default: List<NamedPackage>
-    ): Flow<List<NamedPackage>> = appDataStore.getNamedPackageList(namedPackageListKey(setting), default)
+    ): Flow<List<NamedPackage>> {
+        val finalDefault = if (setting == NamedPackageListSetting.ManagedInstallerPackages && default.isEmpty()) {
+            AppDataStore.DEFAULT_MANAGED_INSTALLER_PACKAGES
+        } else default
+        return appDataStore.getNamedPackageList(namedPackageListKey(setting), finalDefault)
+    }
 
     override suspend fun putSharedUidList(setting: SharedUidListSetting, uids: List<SharedUid>) =
         appDataStore.putSharedUidList(sharedUidListKey(setting), uids)
