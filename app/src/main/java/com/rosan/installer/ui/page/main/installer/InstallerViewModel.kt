@@ -100,11 +100,12 @@ class InstallerViewModel(
                 autoSilentInstall = prefs.autoSilentInstall,
                 labTapIconToShare = prefs.labTapIconToShare
             ),
+            rootMode = prefs.labRootMode,
             managedInstallerPackages = prefs.managedInstallerPackages,
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Eagerly,
         initialValue = _localState.value
     )
 
