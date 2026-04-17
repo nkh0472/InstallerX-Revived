@@ -357,29 +357,32 @@ class InstallerViewModel(
 
                 val oldPackageName = _localState.value.currentPackageName
 
+                // 1. 纯粹的状态更新，里面绝对不能有 viewModelScope.launch 或任何副作用
                 _localState.update { currentState ->
-                    // Prevent UI flickering by retaining old metadata during uninstallation
                     val mergedUninstallInfo = uninstallInfo?.let { incoming ->
                         val current = currentState.uiUninstallInfo
                         if (current != null && incoming.packageName == current.packageName && incoming.appLabel == null) {
-                            // The app is being uninstalled and the system can no longer provide the label,
-                            // so we fall back to our cached rich metadata.
                             current
                         } else {
-                            // Normal state updates
                             incoming
                         }
                     } ?: currentState.uiUninstallInfo
 
-                    val updatedState = currentState.copy(
+                    currentState.copy(
                         stage = newStage,
-                        currentPackageName = newPackageName, // Explicitly assign the new value, no fallback needed
+                        currentPackageName = newPackageName,
                         uiUninstallInfo = mergedUninstallInfo,
                         error = session.error
                     )
+                }
 
-                    // Re-calculate seed color from the icon if dynamic color is enabled
-                    if (updatedState.viewSettings.useDynColorFollowPkgIcon) {
+                if (newPackageName != oldPackageName) {
+
+                    if (newPackageName != null) {
+                        loadDisplayIcon(newPackageName)
+                    }
+
+                    if (_localState.value.viewSettings.useDynColorFollowPkgIcon) {
                         if (newPackageName.isNullOrEmpty()) {
                             if (defaultFallbackSeedColor != null) {
                                 _localState.update { it.copy(seedColor = Color(defaultFallbackSeedColor!!)) }
@@ -388,7 +391,7 @@ class InstallerViewModel(
                                     defaultFallbackSeedColor = getAppIconColor(
                                         sessionId = session.id,
                                         packageName = "",
-                                        preferSystemIcon = updatedState.viewSettings.preferSystemIconForUpdates
+                                        preferSystemIcon = _localState.value.viewSettings.preferSystemIconForUpdates
                                     )
                                     _localState.update { it.copy(seedColor = defaultFallbackSeedColor?.let { c -> Color(c) }) }
                                 }
@@ -398,14 +401,14 @@ class InstallerViewModel(
                                 val colorInt = getAppIconColor(
                                     sessionId = session.id,
                                     packageName = newPackageName,
-                                    preferSystemIcon = updatedState.viewSettings.preferSystemIconForUpdates
+                                    preferSystemIcon = _localState.value.viewSettings.preferSystemIconForUpdates
                                 )
                                 _localState.update { it.copy(seedColor = colorInt?.let { c -> Color(c) }) }
                             }
                         }
+                    } else if (_localState.value.seedColor != null) {
+                        _localState.update { it.copy(seedColor = null) }
                     }
-
-                    updatedState
                 }
 
                 // Icon loading logic: load only when the package name changes and is not null/empty
