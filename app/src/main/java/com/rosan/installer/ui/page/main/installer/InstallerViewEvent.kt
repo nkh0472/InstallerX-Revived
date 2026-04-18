@@ -21,7 +21,7 @@ sealed class InstallerViewEvent {
     data class ShowErrorToast(val error: Throwable) : InstallerViewEvent()
 
     /**
-     * Share a file with a given MIME type.
+     * Share a file using its original content URI.
      */
-    data class ShareFile(val filePath: String, val mimeType: String) : InstallerViewEvent()
+    data class ShareFile(val uriString: String, val mimeType: String) : InstallerViewEvent()
 }

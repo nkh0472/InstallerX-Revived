@@ -656,22 +656,29 @@ class InstallerViewModel(
 
     private fun shareApp(entity: AppEntity) {
         Timber.d("Sharing app: $entity")
-        val filePath = entity.data.sourcePath()
-        if (filePath == null) {
-            toast("Invalid file entity for sharing")
+
+        // Get the original URI string from the session.
+        // For single file sharing, we can use the first available URI.
+        // If your logic requires mapping specific entities to specific URIs,
+        // you would need to adjust the index accordingly.
+        val uriString = session.sourceUris.firstOrNull()
+        if (uriString == null) {
+            toast("No source URI available for sharing") // You can extract this to string resources
             return
         }
 
+        val filePath = entity.data.sourcePath()
         val mimeType = when {
             entity is AppEntity.ModuleEntity -> "application/zip"
-            filePath.endsWith(".apkm", true) ||
-                    filePath.endsWith(".apks", true) ||
-                    filePath.endsWith(".xapk", true) -> "application/zip"
+            filePath?.endsWith(".apkm", true) == true ||
+                    filePath?.endsWith(".apks", true) == true ||
+                    filePath?.endsWith(".xapk", true) == true -> "application/zip"
 
             else -> "application/vnd.android.package-archive"
         }
 
-        _uiEvents.tryEmit(InstallerViewEvent.ShareFile(filePath, mimeType))
+        // Emit the event with the URI string
+        _uiEvents.tryEmit(InstallerViewEvent.ShareFile(uriString, mimeType))
     }
 
     private fun fetchInitiatorAppLabel(packageName: String?) {

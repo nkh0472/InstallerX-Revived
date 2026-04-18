@@ -768,7 +768,7 @@
     <string name="lab_mi_island_countdown">XMSF 断网时长</string>
     <string name="lab_mi_island_countdown_desc">设置 XMSF 断网时长。仅对 Shizuku 生效。请仅在明确影响时修改！</string>
     <string name="lab_tap_icon_to_share">点击图标分享安装包</string>
-    <string name="lab_tap_icon_to_share_desc">[实验性] 在安装准备界面点击应用图标即可分享安装包，暂不支持分享位于私有目录的文件</string>
+    <string name="lab_tap_icon_to_share_desc">在安装准备界面点击应用图标即可分享安装包</string>
     <string name="notification_settings">通知设置</string>
     <string name="notification_settings_desc">自定义安装进度通知的展示效果</string>
     <string name="notification_style">通知样式</string>

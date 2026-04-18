@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -33,7 +33,6 @@ import com.rosan.installer.util.getErrorMessage
 import com.rosan.installer.util.toast
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
-import java.io.File
 
 @Composable
 fun LogEventCollector(viewModel: AboutViewModel) {
@@ -131,19 +130,14 @@ fun InstallerEventCollector(viewModel: InstallerViewModel) {
 
                 is InstallerViewEvent.ShareFile -> {
                     try {
-                        val fileToShare = File(event.filePath)
+                        // Parse the original URI string back into an android.net.Uri
+                        val uri = event.uriString.toUri()
 
-                        if (!fileToShare.exists()) {
-                            context.toast("File does not exist")
-                            return@collect
-                        }
-
-                        val authority = "${context.packageName}.fileprovider"
-                        val uri = FileProvider.getUriForFile(context, authority, fileToShare)
-
+                        // Directly use the URI in the intent
                         val shareIntent = Intent(Intent.ACTION_SEND).apply {
                             type = event.mimeType
                             putExtra(Intent.EXTRA_STREAM, uri)
+                            // Grant read permission so the receiving app can access the URI
                             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         }
 
@@ -153,7 +147,7 @@ fun InstallerEventCollector(viewModel: InstallerViewModel) {
                         context.startActivity(chooser)
 
                     } catch (e: Exception) {
-                        Timber.e(e, "Failed to share file")
+                        Timber.e(e, "Failed to share file via URI")
                         context.toast("Failed to share file")
                     }
                 }
