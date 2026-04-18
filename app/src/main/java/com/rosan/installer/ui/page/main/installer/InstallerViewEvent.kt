@@ -14,4 +14,14 @@ sealed class InstallerViewEvent {
      * Show a simple toast message using a string resource ID.
      */
     data class ShowToastRes(@param:StringRes val messageResId: Int) : InstallerViewEvent()
+
+    /**
+     * Show an error toast message using a Throwable.
+     */
+    data class ShowErrorToast(val error: Throwable) : InstallerViewEvent()
+
+    /**
+     * Share a file with a given MIME type.
+     */
+    data class ShareFile(val filePath: String, val mimeType: String) : InstallerViewEvent()
 }

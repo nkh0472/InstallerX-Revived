@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 InstallerX Revived contributors
 package com.rosan.installer.ui.page.miuix.installer.sheetcontent
 
+import android.content.ClipData
 import android.os.Build
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -27,11 +28,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalViewConfiguration
+import androidx.compose.ui.platform.toClipEntry
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,6 +48,7 @@ import com.rosan.installer.domain.engine.model.AppEntity
 import com.rosan.installer.domain.engine.model.DataType
 import com.rosan.installer.domain.engine.model.InstalledAppInfo
 import com.rosan.installer.domain.engine.model.sortedBest
+import com.rosan.installer.domain.engine.model.sourcePath
 import com.rosan.installer.domain.engine.usecase.AnalyzeInstallStateUseCase
 import com.rosan.installer.domain.settings.model.Authorizer
 import com.rosan.installer.ui.icons.AppIcons
@@ -51,6 +57,8 @@ import com.rosan.installer.ui.page.main.installer.InstallerViewModel
 import com.rosan.installer.ui.page.main.installer.dialog.inner.InstallNoticeResources
 import com.rosan.installer.ui.page.main.installer.mapper.InstallStateUiMapper
 import com.rosan.installer.ui.page.miuix.installer.components.AdaptiveInfoRow
+import com.rosan.installer.ui.page.miuix.installer.components.AppInfoSlot
+import com.rosan.installer.ui.page.miuix.installer.components.AppInfoState
 import com.rosan.installer.ui.page.miuix.settings.preferred.MiuixNavigationItemWidget
 import com.rosan.installer.ui.page.miuix.widgets.MiuixInfoChipGroup
 import com.rosan.installer.ui.page.miuix.widgets.MiuixInstallerTipCard
@@ -58,8 +66,11 @@ import com.rosan.installer.ui.theme.InstallerTheme
 import com.rosan.installer.ui.theme.miuixSheetCardColorDark
 import com.rosan.installer.ui.util.formatSize
 import com.rosan.installer.ui.util.isGestureNavigation
+import com.rosan.installer.util.toast
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardColors
@@ -77,6 +88,9 @@ fun InstallPrepareContent(
     onInstall: () -> Unit,
     onLongInstall: () -> Unit
 ) {
+    val context = LocalContext.current
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
     val isDarkMode = InstallerTheme.isDark
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val config = uiState.config
@@ -437,6 +451,68 @@ fun InstallPrepareContent(
             }
         }
 
+        // Display lab info card if either setting is enabled
+        item {
+            AnimatedVisibility(
+                visible = !isExpanded && (settings.labShowFilePath || settings.labShowInstallInitiator),
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = CardColors(
+                        color = if (isDynamicColor) MiuixTheme.colorScheme.surfaceContainer else
+                            if (isDarkMode) miuixSheetCardColorDark else Color.White,
+                        contentColor = MiuixTheme.colorScheme.onSurface
+                    )
+                ) {
+                    if (settings.labShowFilePath) {
+                        // Safely extract the source path
+                        val path = runCatching {
+                            val rawPath = primaryEntity.data.sourcePath()
+                            // If multiple files are selected (like Splits), show the parent directory
+                            if (selectedEntities.size > 1 && rawPath != null) {
+                                rawPath.substringBeforeLast("/") + " (Multi-part)"
+                            } else {
+                                rawPath
+                            }
+                        }.getOrNull() ?: stringResource(R.string.installer_label_unknown)
+
+                        BasicComponent(
+                            title = stringResource(R.string.lab_show_apk_path_label),
+                            summary = path,
+                            onClick = {
+                                scope.launch {
+                                    val clipData = ClipData.newPlainText("APK Path", path)
+                                    clipboard.setClipEntry(clipData.toClipEntry())
+                                    context.toast(R.string.copied_format, path)
+                                }
+                            }
+                        )
+                    }
+
+                    if (settings.labShowInstallInitiator) {
+                        // Use the runtime field initiatorPackageName from ConfigModel
+                        val initiator = uiState.initiatorAppLabel ?: stringResource(R.string.installer_label_unknown)
+
+                        BasicComponent(
+                            title = stringResource(R.string.lab_show_install_initiator_label),
+                            summary = initiator,
+                            onClick = {
+                                scope.launch {
+                                    val clipData = ClipData.newPlainText("Install Initiator", initiator)
+                                    clipboard.setClipEntry(clipData.toClipEntry())
+                                    context.toast(R.string.copied_format, initiator)
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
         val canInstallBaseEntity = (primaryEntity as? AppEntity.BaseEntity)?.let { base ->
             if (entityToInstall != null) {
                 // Installing Base: Check SDK
@@ -490,7 +566,7 @@ fun InstallPrepareContent(
                 if (showExpandButton)
                     TextButton(
                         onClick = { isExpanded = !isExpanded },
-                        text = if (isExpanded) stringResource(R.string.collapse) else stringResource(R.string.expand),
+                        text = if (isExpanded) stringResource(R.string.collapse) else stringResource(R.string.more),
                         colors = ButtonDefaults.textButtonColors(
                             color = if (isDynamicColor) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.secondaryVariant,
                             textColor = if (isDynamicColor) MiuixTheme.colorScheme.onSecondaryContainer else MiuixTheme.colorScheme.onSecondaryVariant

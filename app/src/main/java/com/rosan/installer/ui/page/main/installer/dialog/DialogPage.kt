@@ -19,7 +19,7 @@ import com.rosan.installer.ui.page.main.installer.InstallerViewAction
 import com.rosan.installer.ui.page.main.installer.InstallerViewModel
 import com.rosan.installer.ui.page.main.installer.components.PositionDialog
 import com.rosan.installer.ui.page.main.installer.dialog.inner.ModuleInstallSheetContent
-import com.rosan.installer.ui.page.main.widget.util.ToastEventCollector
+import com.rosan.installer.ui.page.main.widget.util.InstallerEventCollector
 import com.rosan.installer.ui.theme.InstallerMaterialExpressiveTheme
 import com.rosan.installer.ui.theme.InstallerTheme
 import com.rosan.installer.ui.theme.LocalInstallerColorScheme
@@ -60,7 +60,7 @@ fun DialogPage(
         viewModel.dispatch(InstallerViewAction.CollectSession(session))
     }
 
-    ToastEventCollector(viewModel)
+    InstallerEventCollector(viewModel)
 
     CompositionLocalProvider(
         LocalInstallerColorScheme provides activeColorScheme

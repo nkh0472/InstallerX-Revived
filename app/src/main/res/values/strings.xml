@@ -224,7 +224,7 @@
     <string name="config_customize_install_reason">Customize Install Reason</string>
     <string name="config_customize_install_reason_desc">Specify the install reason. For new installations, selecting "User" usually triggers the launcher to create a desktop icon</string>
     <string name="config_install_reason">Install Reason</string>
-    <string name="config_install_reason_unknown">Unknown</string>
+    <string name="config_install_reason_unknown">Unknown Reason</string>
     <string name="config_install_reason_policy">Device Policy</string>
     <string name="config_install_reason_device_restore">Device Restore</string>
     <string name="config_install_reason_device_setup">Device Setup</string>
@@ -390,6 +390,8 @@
     <string name="installer_xposed_target_api">Target API: </string>
     <string name="installer_splits_invalid_tip">Cannot add the selected split package to an uninstalled app</string>
     <string name="installer_splits_only_tip">Only split APKs are selected. They will be added to the existing application</string>
+    <string name="installer_temp_settings_tip">These settings are temporary for this session. To keep them, go to Settings</string>
+    <string name="installer_label_unknown" translatable="false">Unknown</string>
     <string name="installer_install_app">Install App</string>
     <string name="installer_install_module">Install Module</string>
     <string name="installer_install_confirm">Install Confirm</string>
@@ -773,13 +775,20 @@
     <string name="lab_update_github_proxy_url">Custom URL</string>
     <string name="lab_update_github_proxy_url_desc">Proxy URL</string>
     <string name="lab_unstable_features">Unstable features</string>
+    <string name="lab_ui_settings">Experimental UI feature</string>
+    <string name="lab_show_apk_path">Show file path</string>
+    <string name="lab_show_apk_path_label">File path</string>
+    <string name="lab_show_apk_path_desc">Display the file path in app details</string>
+    <string name="lab_show_install_initiator">Show install initiator</string>
+    <string name="lab_show_install_initiator_label">Install initiator</string>
+    <string name="lab_show_install_initiator_desc">Display which app started the installation</string>
     <string name="lab_set_install_requester">Set Install Requester</string>
     <string name="lab_set_install_requester_desc">Fill OriginatingUid field with caller package to match system behavior</string>
     <string name="lab_mi_island">Mi Super Island</string>
     <string name="lab_mi_island_countdown">XMSF block duration</string>
     <string name="lab_mi_island_countdown_desc">Sets the XMSF network block duration. Only applies to Shizuku. Modify only if you understand the consequences!</string>
     <string name="lab_tap_icon_to_share">Tap icon to share apk</string>
-    <string name="lab_tap_icon_to_share_desc">Tap icon on the prepare page to share apk</string>
+    <string name="lab_tap_icon_to_share_desc">[Experimental] Tap icon on the prepare page to share apk, files in private directories are not supported yet</string>
     <string name="notification_settings">Notification Settings</string>
     <string name="notification_settings_desc">Customize the appearance of installation progress notifications</string>
     <string name="notification_style">Notification Style</string>
