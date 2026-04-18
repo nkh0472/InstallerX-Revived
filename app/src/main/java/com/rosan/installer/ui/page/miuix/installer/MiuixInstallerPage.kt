@@ -478,6 +478,18 @@ fun MiuixInstallerPage(
                                                         viewModel.dispatch(InstallerViewAction.Background)
                                                     }
                                                 }
+                                            },
+                                            onLongInstall = {
+                                                // Trigger install directly
+                                                viewModel.dispatch(InstallerViewAction.Install(true))
+                                                // Force background auto silent install regardless of settings
+                                                if (!viewModel.isInstallingModule) {
+                                                    showBottomSheet.value = false
+                                                    scope.launch {
+                                                        delay(SHEET_ANIMATION_DURATION)
+                                                        viewModel.dispatch(InstallerViewAction.Background)
+                                                    }
+                                                }
                                             }
                                         )
                                     }
