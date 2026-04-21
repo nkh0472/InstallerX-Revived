@@ -79,7 +79,11 @@ fun NotificationSettingsPage(
         }
     }
 
-    val activeStyle = if (!isModernEligible) NotificationStyle.STANDARD else uiState.currentStyle
+    val activeStyle = if (styleOptions.contains(uiState.currentStyle)) {
+        uiState.currentStyle
+    } else {
+        NotificationStyle.STANDARD
+    }
     val selectedIndex = styleOptions.indexOf(activeStyle).coerceAtLeast(0)
 
     Scaffold(
