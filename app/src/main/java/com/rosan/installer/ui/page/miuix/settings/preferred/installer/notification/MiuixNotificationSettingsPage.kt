@@ -137,10 +137,17 @@ fun MiuixNotificationSettingsPage(
                         .padding(bottom = 12.dp)
                 ) {
                     // 1. Notification style dropdown
+                    val isStyleSelectionEnabled = isModernEligible || isMiIslandSupported
+
                     WindowSpinnerPreference(
                         title = stringResource(R.string.notification_style),
-                        summary = if (isModernEligible) styleNames[selectedIndex] else stringResource(R.string.notification_style_unsupported_desc),
-                        enabled = isModernEligible,
+                        // Show "unsupported" only if no advanced styles are available
+                        summary = if (isStyleSelectionEnabled) {
+                            styleNames.getOrNull(selectedIndex) ?: ""
+                        } else {
+                            stringResource(R.string.notification_style_unsupported_desc)
+                        },
+                        enabled = isStyleSelectionEnabled,
                         items = spinnerEntries,
                         selectedIndex = selectedIndex,
                         onSelectedIndexChange = { index ->

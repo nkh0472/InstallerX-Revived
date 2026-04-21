@@ -107,11 +107,12 @@ fun NotificationSettingsPage(
             // 1. Notification Style Dropdown
             item { LabelWidget(stringResource(R.string.notification_style)) }
             item {
+                val isStyleSelectionEnabled = isModernEligible || isMiIslandSupported
                 DropDownMenuWidget(
                     icon = AppIcons.Palette,
                     title = stringResource(R.string.notification_style),
-                    description = if (isModernEligible) styleNames[selectedIndex] else stringResource(R.string.notification_style_unsupported_desc),
-                    enabled = isModernEligible, // Disable interaction if SDK < Baklava
+                    description = if (isStyleSelectionEnabled) styleNames[selectedIndex] else stringResource(R.string.notification_style_unsupported_desc),
+                    enabled = isStyleSelectionEnabled,
                     choice = selectedIndex,
                     data = styleNames,
                     onChoiceChange = { index ->

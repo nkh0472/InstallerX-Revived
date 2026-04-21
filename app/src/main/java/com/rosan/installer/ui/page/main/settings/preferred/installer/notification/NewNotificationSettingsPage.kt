@@ -148,11 +148,12 @@ fun NewNotificationSettingsPage(
                     title = stringResource(R.string.notification_style)
                 ) {
                     item {
+                        val isStyleSelectionEnabled = isModernEligible || isMiIslandSupported
                         DropDownMenuWidget(
                             icon = AppIcons.Palette,
                             title = stringResource(R.string.notification_style),
-                            description = if (isModernEligible) styleNames[selectedIndex] else stringResource(R.string.notification_style_unsupported_desc),
-                            enabled = isModernEligible,
+                            description = if (isStyleSelectionEnabled) styleNames[selectedIndex] else stringResource(R.string.notification_style_unsupported_desc),
+                            enabled = isStyleSelectionEnabled,
                             choice = selectedIndex,
                             data = styleNames,
                             onChoiceChange = { index ->
