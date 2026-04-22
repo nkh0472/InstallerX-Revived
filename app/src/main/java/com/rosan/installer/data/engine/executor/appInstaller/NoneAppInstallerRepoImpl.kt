@@ -42,6 +42,7 @@ class NoneAppInstallerRepoImpl(
         sharedUserIdBlacklist: List<String>,
         sharedUserIdExemption: List<String>
     ) {
+        val allowInstallWithoutUserAction = config.allowInstallWithoutUserAction
         val result = runCatching {
             if (!context.packageManager.canRequestPackageInstalls()) {
                 val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
@@ -64,7 +65,7 @@ class NoneAppInstallerRepoImpl(
 
                 // Check API level to avoid NoSuchMethodError on older devices
                 // Request silent update if conditions are met (requires UPDATE_PACKAGES_WITHOUT_USER_ACTION permission)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && allowInstallWithoutUserAction) {
                     params.setRequireUserAction(PackageInstaller.SessionParams.USER_ACTION_NOT_REQUIRED)
                 }
 

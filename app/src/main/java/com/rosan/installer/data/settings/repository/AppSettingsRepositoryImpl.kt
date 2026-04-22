@@ -92,6 +92,7 @@ class AppSettingsRepositoryImpl(
             appDataStore.getBoolean(AppDataStore.LAB_TAP_ICON_TO_SHARE, false),
             appDataStore.getBoolean(AppDataStore.LAB_SHOW_FILE_PATH, false),
             appDataStore.getBoolean(AppDataStore.LAB_SHOW_INSTALL_INITIATOR, false),
+            appDataStore.getBoolean(AppDataStore.LAB_INSTALL_WITHOUT_USER_ACTION, false),
             appDataStore.getBoolean(AppDataStore.ENABLE_FILE_LOGGING, true),
 
             // Theme settings
@@ -158,6 +159,7 @@ class AppSettingsRepositoryImpl(
             labTapIconToShare = values[idx++] as Boolean,
             labShowFilePath = values[idx++] as Boolean,
             labShowInstallInitiator = values[idx++] as Boolean,
+            labInstallWithoutUserAction = values[idx++] as Boolean,
             enableFileLogging = values[idx++] as Boolean,
             // UI State
             themeMode = ThemeMode.fromValueOrDefault(values[idx++] as String),
@@ -288,6 +290,7 @@ class AppSettingsRepositoryImpl(
             BooleanSetting.LabTapIconToShare -> AppDataStore.LAB_TAP_ICON_TO_SHARE
             BooleanSetting.LabShowFilePath -> AppDataStore.LAB_SHOW_FILE_PATH
             BooleanSetting.LabShowInstallInitiator -> AppDataStore.LAB_SHOW_INSTALL_INITIATOR
+            BooleanSetting.LabInstallWithoutUserAction -> AppDataStore.LAB_INSTALL_WITHOUT_USER_ACTION
             BooleanSetting.EnableFileLogging -> AppDataStore.ENABLE_FILE_LOGGING
         }
 
